@@ -3,6 +3,8 @@ import 'package:google_fonts/google_fonts.dart';
 import '../home/home_screen.dart';
 import '../guide/crop_guide_screen.dart';
 import '../advisory/advisory_screen.dart';
+import '../history/chat_history_screen.dart';
+import '../market/marketplace_screen.dart';
 import '../auth/registration_screen.dart'; // For logout navigation
 import '../shared/language_bottom_sheet.dart';
 
@@ -377,7 +379,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     final navBg = const Color(0xFF0D1C13).withOpacity(0.9);
     
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
       decoration: BoxDecoration(
         color: navBg,
         border: const Border(top: BorderSide(color: Colors.white10)),
@@ -386,9 +388,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           _buildNavItem(Icons.home, 'Home', false, primaryColor, onTap: () => Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => const HomeScreen()))),
-          _buildNavItem(Icons.spa, 'Crop Guide', false, primaryColor, onTap: () => Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => const CropGuideScreen()))),
-          _buildNavItem(Icons.tips_and_updates, 'Advisory', false, primaryColor, onTap: () => Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => const AdvisoryScreen()))), 
-          _buildNavItem(Icons.person, 'Profile', true, primaryColor), // Active
+          _buildNavItem(Icons.spa, 'Guide', false, primaryColor, onTap: () => Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => const CropGuideScreen()))),
+          _buildNavItem(Icons.history, 'History', false, primaryColor, onTap: () => Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => const ChatHistoryScreen()))),
+          _buildNavItem(Icons.tips_and_updates, 'Advisory', false, primaryColor, onTap: () => Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => const AdvisoryScreen()))),
+          _buildNavItem(Icons.store, 'Market', false, primaryColor, onTap: () => Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => const MarketplaceScreen()))),
         ],
       ),
     );

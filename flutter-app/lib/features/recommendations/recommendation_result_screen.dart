@@ -1,6 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'crop_plan_screen.dart';
+import '../home/home_screen.dart';
+import '../guide/crop_guide_screen.dart';
+import '../history/chat_history_screen.dart';
+import '../advisory/advisory_screen.dart';
+import '../market/marketplace_screen.dart';
 
 class RecommendationResultScreen extends StatelessWidget {
   const RecommendationResultScreen({super.key});
@@ -352,7 +357,7 @@ class RecommendationResultScreen extends StatelessWidget {
      final navBg = const Color(0xFF0D1C13).withOpacity(0.9);
     
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
       decoration: BoxDecoration(
         color: navBg,
         border: const Border(top: BorderSide(color: Colors.white10)),
@@ -360,25 +365,29 @@ class RecommendationResultScreen extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          _buildNavItem(Icons.home, 'Home', false, primaryColor),
-          _buildNavItem(Icons.spa, 'Crop Guide', false, primaryColor),
-          _buildNavItem(Icons.tips_and_updates, 'Advisory', true, primaryColor), // Active
-          _buildNavItem(Icons.person, 'Profile', false, primaryColor),
+          _buildNavItem(Icons.home, 'Home', false, primaryColor, onTap: () => Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => const HomeScreen()))),
+          _buildNavItem(Icons.spa, 'Guide', false, primaryColor, onTap: () => Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => const CropGuideScreen()))),
+          _buildNavItem(Icons.history, 'History', false, primaryColor, onTap: () => Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => const ChatHistoryScreen()))),
+          _buildNavItem(Icons.tips_and_updates, 'Advisory', false, primaryColor, onTap: () => Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => const AdvisoryScreen()))),
+          _buildNavItem(Icons.store, 'Market', false, primaryColor, onTap: () => Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => const MarketplaceScreen()))),
         ],
       ),
     );
   }
 
-  Widget _buildNavItem(IconData icon, String label, bool isSelected, Color color) {
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        if (isSelected) 
-          Container(height: 6, width: 6, margin: const EdgeInsets.only(bottom: 2), decoration: BoxDecoration(color: color, shape: BoxShape.circle, boxShadow: [BoxShadow(color: color, blurRadius: 6)])),
-        Icon(icon, color: isSelected ? color : Colors.grey, size: 26),
-        const SizedBox(height: 2),
-        Text(label, style: GoogleFonts.lexend(fontSize: 10, fontWeight: isSelected ? FontWeight.bold : FontWeight.w500, color: isSelected ? color : Colors.grey)),
-      ],
+  Widget _buildNavItem(IconData icon, String label, bool isSelected, Color color, {VoidCallback? onTap}) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          if (isSelected) 
+            Container(height: 6, width: 6, margin: const EdgeInsets.only(bottom: 2), decoration: BoxDecoration(color: color, shape: BoxShape.circle, boxShadow: [BoxShadow(color: color, blurRadius: 6)])),
+          Icon(icon, color: isSelected ? color : Colors.grey, size: 26),
+          const SizedBox(height: 2),
+          Text(label, style: GoogleFonts.lexend(fontSize: 10, fontWeight: isSelected ? FontWeight.bold : FontWeight.w500, color: isSelected ? color : Colors.grey)),
+        ],
+      ),
     );
   }
 }
