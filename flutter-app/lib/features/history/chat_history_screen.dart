@@ -11,11 +11,15 @@ class ChatHistoryScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    const Color primaryColor = Color(0xFF13EC6A);
-    const Color backgroundDark = Color(0xFF102217);
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
+    final primaryColor = theme.primaryColor;
+    final textColor = theme.textTheme.bodyMedium?.color ?? Colors.black87;
+    final containerColor = isDark ? const Color(0xFF1c2e20) : Colors.white;
+    final borderColor = theme.dividerColor.withOpacity(0.1);
 
     return Scaffold(
-      backgroundColor: backgroundDark,
+      backgroundColor: theme.scaffoldBackgroundColor,
       body: SafeArea(
         child: Column(
           children: [
@@ -30,9 +34,9 @@ class ChatHistoryScreen extends StatelessWidget {
                       padding: const EdgeInsets.all(8),
                       decoration: BoxDecoration(
                         shape: BoxShape.circle,
-                        color: Colors.white.withOpacity(0.05),
+                        color: isDark ? Colors.white.withOpacity(0.05) : Colors.black.withOpacity(0.05),
                       ),
-                      child: const Icon(Icons.arrow_back, color: Colors.white),
+                      child: Icon(Icons.arrow_back, color: isDark ? Colors.white : Colors.black87),
                     ),
                   ),
                   const SizedBox(width: 16),
@@ -41,7 +45,7 @@ class ChatHistoryScreen extends StatelessWidget {
                     style: GoogleFonts.lexend(
                       fontSize: 24,
                       fontWeight: FontWeight.bold,
-                      color: Colors.white,
+                      color: textColor,
                     ),
                   ),
                 ],
@@ -58,6 +62,9 @@ class ChatHistoryScreen extends StatelessWidget {
                     date: "Today, 10:30 AM",
                     preview: "The yellow spots indicate early blight...",
                     isActive: true,
+                    textColor: textColor,
+                    containerColor: containerColor,
+                    borderColor: borderColor,
                   ),
                   _buildHistoryItem(
                     context,
@@ -65,6 +72,9 @@ class ChatHistoryScreen extends StatelessWidget {
                     date: "Yesterday",
                     preview: "Recommended NPK 20-20-20 for better growth...",
                     isActive: false,
+                    textColor: textColor,
+                    containerColor: containerColor,
+                    borderColor: borderColor,
                   ),
                    _buildHistoryItem(
                     context,
@@ -72,6 +82,9 @@ class ChatHistoryScreen extends StatelessWidget {
                     date: "Dec 15",
                     preview: "Heavy rain expected next week. Prepare drainage...",
                     isActive: false,
+                    textColor: textColor,
+                    containerColor: containerColor,
+                    borderColor: borderColor,
                   ),
                    _buildHistoryItem(
                     context,
@@ -79,6 +92,9 @@ class ChatHistoryScreen extends StatelessWidget {
                     date: "Dec 10",
                     preview: "Use Neem oil spray every 3 days...",
                     isActive: false,
+                    textColor: textColor,
+                    containerColor: containerColor,
+                    borderColor: borderColor,
                   ),
                 ],
               ),
@@ -95,7 +111,12 @@ class ChatHistoryScreen extends StatelessWidget {
     required String date,
     required String preview,
     required bool isActive,
+    required bool isActive,
+    required Color textColor,
+    required Color containerColor,
+    required Color borderColor,
   }) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     return GestureDetector(
       onTap: () {
         // In a real app, pass the conversation ID here
@@ -105,10 +126,10 @@ class ChatHistoryScreen extends StatelessWidget {
         margin: const EdgeInsets.only(bottom: 12),
         padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(
-          color: const Color(0xFF1c2e20),
+          color: containerColor,
           borderRadius: BorderRadius.circular(16),
           border: Border.all(
-            color: isActive ? const Color(0xFF13EC6A).withOpacity(0.5) : Colors.white.withOpacity(0.05),
+            color: isActive ? const Color(0xFF13EC6A).withOpacity(0.5) : borderColor,
           ),
         ),
         child: Row(
@@ -116,7 +137,7 @@ class ChatHistoryScreen extends StatelessWidget {
             Container(
               padding: const EdgeInsets.all(12),
               decoration: BoxDecoration(
-                color: Colors.white.withOpacity(0.05),
+                color: isDark ? Colors.white.withOpacity(0.05) : Colors.green.withOpacity(0.05),
                 shape: BoxShape.circle,
               ),
               child: const Icon(Icons.chat_bubble_outline, color: Color(0xFF13EC6A)),
@@ -129,12 +150,12 @@ class ChatHistoryScreen extends StatelessWidget {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text(title, style: GoogleFonts.lexend(fontWeight: FontWeight.bold, color: Colors.white, fontSize: 16)),
-                      Text(date, style: GoogleFonts.lexend(color: Colors.grey, fontSize: 12)),
+                      Text(title, style: GoogleFonts.lexend(fontWeight: FontWeight.bold, color: textColor, fontSize: 16)),
+                      Text(date, style: GoogleFonts.lexend(color: isDark ? Colors.grey : Colors.grey[600], fontSize: 12)),
                     ],
                   ),
                   const SizedBox(height: 4),
-                  Text(preview, style: GoogleFonts.lexend(color: Colors.grey[400], fontSize: 13), maxLines: 1, overflow: TextOverflow.ellipsis),
+                  Text(preview, style: GoogleFonts.lexend(color: isDark ? Colors.grey[400] : Colors.grey[600], fontSize: 13), maxLines: 1, overflow: TextOverflow.ellipsis),
                 ],
               ),
             ),
@@ -151,30 +172,34 @@ class ChatHistoryScreen extends StatelessWidget {
   }
 
   Widget _buildBottomNav(BuildContext context) {
-    const Color primaryColor = Color(0xFF13EC6A);
-    final navBg = const Color(0xFF0D1C13).withOpacity(0.9);
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
+    final navBg = isDark ? const Color(0xFF0D1C13).withOpacity(0.9) : Colors.white;
+    const primaryColor = Color(0xFF13EC6A);
     
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12), // Reduced horizontal padding to fit 5 items
       decoration: BoxDecoration(
         color: navBg,
-        border: const Border(top: BorderSide(color: Colors.white10)),
+        border: Border(top: BorderSide(color: isDark ? Colors.white10 : Colors.black12)),
+        boxShadow: isDark ? [] : [BoxShadow(color: Colors.black.withOpacity(0.05), blurRadius: 10, offset: const Offset(0, -5))],
       ),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          _buildNavItem(Icons.home, 'Home', false, primaryColor, onTap: () => Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => const HomeScreen()))),
-          _buildNavItem(Icons.spa, 'Guide', false, primaryColor, onTap: () => Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => const CropGuideScreen()))),
+          _buildNavItem(context, Icons.home, 'Home', false, primaryColor, onTap: () => Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => const HomeScreen()))),
+          _buildNavItem(context, Icons.spa, 'Guide', false, primaryColor, onTap: () => Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => const CropGuideScreen()))),
           // History (Middle)
-           _buildNavItem(Icons.history, 'History', true, primaryColor),
-          _buildNavItem(Icons.tips_and_updates, 'Advisory', false, primaryColor, onTap: () => Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => const AdvisoryScreen()))),
-          _buildNavItem(Icons.store, 'Market', false, primaryColor, onTap: () => Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => const MarketplaceScreen()))),
+           _buildNavItem(context, Icons.history, 'History', true, primaryColor),
+          _buildNavItem(context, Icons.tips_and_updates, 'Advisory', false, primaryColor, onTap: () => Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => const AdvisoryScreen()))),
+          _buildNavItem(context, Icons.store, 'Market', false, primaryColor, onTap: () => Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => const MarketplaceScreen()))),
         ],
       ),
     );
   }
 
-  Widget _buildNavItem(IconData icon, String label, bool isSelected, Color color, {VoidCallback? onTap}) {
+  Widget _buildNavItem(BuildContext context, IconData icon, String label, bool isSelected, Color color, {VoidCallback? onTap}) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     return GestureDetector(
       onTap: onTap,
       child: Column(
@@ -182,9 +207,9 @@ class ChatHistoryScreen extends StatelessWidget {
         children: [
           if (isSelected) 
             Container(height: 6, width: 6, margin: const EdgeInsets.only(bottom: 2), decoration: BoxDecoration(color: color, shape: BoxShape.circle, boxShadow: [BoxShadow(color: color, blurRadius: 6)])),
-          Icon(icon, color: isSelected ? color : Colors.grey, size: 24), // Slightly smaller icon
+          Icon(icon, color: isSelected ? color : (isDark ? Colors.grey : Colors.grey[400]), size: 24), // Slightly smaller icon
           const SizedBox(height: 2),
-          Text(label, style: GoogleFonts.lexend(fontSize: 10, fontWeight: isSelected ? FontWeight.bold : FontWeight.w500, color: isSelected ? color : Colors.grey)),
+          Text(label, style: GoogleFonts.lexend(fontSize: 10, fontWeight: isSelected ? FontWeight.bold : FontWeight.w500, color: isSelected ? color : (isDark ? Colors.grey : Colors.grey[600]))),
         ],
       ),
     );

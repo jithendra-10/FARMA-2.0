@@ -36,16 +36,19 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
   @override
   Widget build(BuildContext context) {
     final bool isDark = Theme.of(context).brightness == Brightness.dark;
+    final theme = Theme.of(context);
     
     // Exact colors from Tailwind config
-    final Color primaryColor = const Color(0xFF13EC6A);
-    final Color backgroundLight = const Color(0xFFF6F8F7);
-    final Color backgroundDark = const Color(0xFF102217);
+    final Color primaryColor = theme.primaryColor;
+    // User requested completely white for light mode
+    final Color backgroundLight = Colors.white; 
+    final Color backgroundDark = const Color(0xFF102217); // Keep consistent dark bg
     final Color textDark = const Color(0xFF111814);
     
     final Color bgColor = isDark ? backgroundDark : backgroundLight;
     final Color textColor = isDark ? Colors.white : textDark;
     final Color cardBg = isDark ? const Color(0xFF1A3826) : Colors.white;
+    final Color borderColor = isDark ? Colors.white10 : Colors.grey.shade200;
 
     return Scaffold(
       backgroundColor: bgColor,
@@ -78,7 +81,7 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
                               decoration: BoxDecoration(
                                 color: isDark ? const Color(0xFF1A3826) : Colors.white,
                                 borderRadius: BorderRadius.circular(24),
-                                border: Border.all(color: isDark ? const Color(0xFF2A4D36) : Colors.grey.shade200),
+                                border: Border.all(color: borderColor),
                               ),
                               child: Row(
                                 children: [
@@ -105,7 +108,7 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
                               decoration: BoxDecoration(
                                 color: isDark ? const Color(0xFF1A3826) : Colors.white,
                                 shape: BoxShape.circle,
-                                border: Border.all(color: isDark ? const Color(0xFF2A4D36) : Colors.grey.shade200),
+                                border: Border.all(color: borderColor),
                               ),
                               child: Icon(Icons.person, size: 20, color: textColor),
                             ),
@@ -265,7 +268,7 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
                     decoration: BoxDecoration(
                       color: cardBg,
                       borderRadius: BorderRadius.circular(24),
-                      border: isDark ? null : Border.all(color: Colors.grey.shade100),
+                      border: Border.all(color: borderColor),
                       boxShadow: isDark ? null : [
                         BoxShadow(color: Colors.black.withOpacity(0.02), blurRadius: 4, offset: const Offset(0, 2))
                       ],
@@ -492,18 +495,19 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            _buildNavItem(Icons.home, 'Home', true, primaryColor),
-            _buildNavItem(Icons.spa, 'Guide', false, primaryColor, onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const CropGuideScreen()))),
-            _buildNavItem(Icons.history, 'History', false, primaryColor, onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const ChatHistoryScreen()))),
-            _buildNavItem(Icons.tips_and_updates, 'Advisory', false, primaryColor, onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const AdvisoryScreen()))),
-            _buildNavItem(Icons.store, 'Market', false, primaryColor, onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const MarketplaceScreen()))),
+            _buildNavItem(context, Icons.home, 'Home', true, primaryColor),
+            _buildNavItem(context, Icons.spa, 'Guide', false, primaryColor, onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const CropGuideScreen()))),
+            _buildNavItem(context, Icons.history, 'History', false, primaryColor, onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const ChatHistoryScreen()))),
+            _buildNavItem(context, Icons.tips_and_updates, 'Advisory', false, primaryColor, onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const AdvisoryScreen()))),
+            _buildNavItem(context, Icons.store, 'Market', false, primaryColor, onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const MarketplaceScreen()))),
           ],
         ),
       ),
     );
   }
 
-  Widget _buildNavItem(IconData icon, String label, bool isSelected, Color color, {VoidCallback? onTap}) {
+  Widget _buildNavItem(BuildContext context, IconData icon, String label, bool isSelected, Color color, {VoidCallback? onTap}) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     return GestureDetector(
       onTap: onTap,
       child: Column(
@@ -511,9 +515,9 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
         children: [
           if (isSelected) 
             Container(height: 6, width: 6, margin: const EdgeInsets.only(bottom: 2), decoration: BoxDecoration(color: color, shape: BoxShape.circle, boxShadow: [BoxShadow(color: color, blurRadius: 6)])),
-          Icon(icon, color: isSelected ? color : Colors.grey, size: 26),
+          Icon(icon, color: isSelected ? color : (isDark ? Colors.grey : Colors.grey[400]), size: 26),
           const SizedBox(height: 2),
-          Text(label, style: GoogleFonts.lexend(fontSize: 10, fontWeight: isSelected ? FontWeight.bold : FontWeight.w500, color: isSelected ? color : Colors.grey)),
+          Text(label, style: GoogleFonts.lexend(fontSize: 10, fontWeight: isSelected ? FontWeight.bold : FontWeight.w500, color: isSelected ? color : (isDark ? Colors.grey : Colors.grey[600]))),
         ],
       ),
     );

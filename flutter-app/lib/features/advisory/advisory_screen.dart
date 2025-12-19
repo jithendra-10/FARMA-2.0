@@ -14,11 +14,15 @@ class AdvisoryScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    const Color primaryColor = Color(0xFF13EC6A);
-    const Color backgroundDark = Color(0xFF102217);
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
+    final primaryColor = theme.primaryColor;
+    final textColor = theme.textTheme.bodyMedium?.color ?? Colors.black87;
+    final containerColor = isDark ? const Color(0xFF1A2C22) : Colors.white;
+    final borderColor = theme.dividerColor.withOpacity(0.1);
 
     return Scaffold(
-      backgroundColor: backgroundDark,
+      backgroundColor: theme.scaffoldBackgroundColor,
       body: SafeArea(
         child: Column(
           children: [
@@ -33,9 +37,9 @@ class AdvisoryScreen extends StatelessWidget {
                       padding: const EdgeInsets.all(8),
                       decoration: BoxDecoration(
                         shape: BoxShape.circle,
-                        color: Colors.white.withOpacity(0.05),
+                        color: isDark ? Colors.white.withOpacity(0.05) : Colors.black.withOpacity(0.05),
                       ),
-                      child: const Icon(Icons.arrow_back, color: Colors.white),
+                      child: Icon(Icons.arrow_back, color: isDark ? Colors.white : Colors.black87),
                     ),
                   ),
                   const SizedBox(width: 16),
@@ -44,7 +48,7 @@ class AdvisoryScreen extends StatelessWidget {
                     style: GoogleFonts.lexend(
                       fontSize: 24,
                       fontWeight: FontWeight.bold,
-                      color: Colors.white,
+                      color: textColor,
                     ),
                   ),
                 ],
@@ -68,7 +72,14 @@ class AdvisoryScreen extends StatelessWidget {
                           end: Alignment.bottomRight,
                         ),
                         borderRadius: BorderRadius.circular(24),
-                        border: Border.all(color: Colors.white.withOpacity(0.1)),
+                        border: Border.all(color: borderColor),
+                        boxShadow: isDark ? [] : [
+                          BoxShadow(
+                            color: Colors.black.withOpacity(0.05),
+                            blurRadius: 10,
+                            offset: const Offset(0, 4),
+                          ),
+                        ],
                       ),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -106,7 +117,7 @@ class AdvisoryScreen extends StatelessWidget {
                     // Recent Alerts
                     Text(
                       "Recent Alerts",
-                      style: GoogleFonts.lexend(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.white),
+                      style: GoogleFonts.lexend(fontSize: 18, fontWeight: FontWeight.bold, color: textColor),
                     ),
                     const SizedBox(height: 16),
                     SingleChildScrollView(
@@ -114,24 +125,33 @@ class AdvisoryScreen extends StatelessWidget {
                       child: Row(
                         children: [
                           _buildAlertCard(
+                            context,
                             icon: Icons.water_drop,
                             title: "High Humidity",
                             message: "Fungal risk +15%",
                             color: Colors.orange,
+                            textColor: textColor,
+                            borderColor: borderColor,
                           ),
                           const SizedBox(width: 12),
                           _buildAlertCard(
+                            context,
                             icon: Icons.trending_up,
                             title: "Market Price",
                             message: "Maize up by 5%",
                             color: primaryColor,
+                            textColor: textColor,
+                            borderColor: borderColor,
                           ),
                           const SizedBox(width: 12),
                           _buildAlertCard(
+                            context,
                             icon: Icons.wb_sunny,
                             title: "Heat Wave",
                             message: "Expected in 3 days",
                             color: Colors.redAccent,
+                            textColor: textColor,
+                            borderColor: borderColor,
                           ),
                         ],
                       ),
@@ -141,7 +161,7 @@ class AdvisoryScreen extends StatelessWidget {
                     // Tools Grid
                     Text(
                       "Management Tools",
-                      style: GoogleFonts.lexend(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.white),
+                      style: GoogleFonts.lexend(fontSize: 18, fontWeight: FontWeight.bold, color: textColor),
                     ),
                     const SizedBox(height: 16),
                     GridView.count(
@@ -159,6 +179,8 @@ class AdvisoryScreen extends StatelessWidget {
                           gradientColors: [Colors.blue.shade900, Colors.blue.shade800],
                           iconColor: Colors.blue.shade200,
                           onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const FertilizerScreen())),
+                          textColor: textColor,
+                          borderColor: borderColor,
                         ),
                         _buildEnhancedToolCard(
                           context,
@@ -168,6 +190,8 @@ class AdvisoryScreen extends StatelessWidget {
                           gradientColors: [Colors.orange.shade900, Colors.orange.shade800],
                           iconColor: Colors.orange.shade200,
                           onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const RiskAssessmentScreen())),
+                          textColor: textColor,
+                          borderColor: borderColor,
                         ),
                         _buildEnhancedToolCard(
                           context,
@@ -177,6 +201,8 @@ class AdvisoryScreen extends StatelessWidget {
                           gradientColors: [Colors.purple.shade900, Colors.purple.shade800],
                           iconColor: Colors.purple.shade200,
                           onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const WhatIfScreen())),
+                          textColor: textColor,
+                          borderColor: borderColor,
                         ),
                         _buildEnhancedToolCard(
                           context,
@@ -189,6 +215,8 @@ class AdvisoryScreen extends StatelessWidget {
                              ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("Pest Control module coming soon!")));
                           },
                           isLocked: true,
+                          textColor: textColor,
+                          borderColor: borderColor,
                         ),
                       ],
                     ),
@@ -204,23 +232,25 @@ class AdvisoryScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildAlertCard({required IconData icon, required String title, required String message, required Color color}) {
+  Widget _buildAlertCard(BuildContext context, {required IconData icon, required String title, required String message, required Color color, required Color textColor, required Color borderColor}) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     return Container(
       width: 160,
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: const Color(0xFF183222),
+        color: isDark ? const Color(0xFF183222) : Colors.white,
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: Colors.white.withOpacity(0.05)),
+        border: Border.all(color: borderColor),
+        boxShadow: isDark ? [] : [BoxShadow(color: Colors.black.withOpacity(0.05), blurRadius: 4, offset: const Offset(0, 2))],
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Icon(icon, color: color, size: 28),
           const SizedBox(height: 12),
-          Text(title, style: GoogleFonts.lexend(fontSize: 14, fontWeight: FontWeight.bold, color: Colors.white)),
+          Text(title, style: GoogleFonts.lexend(fontSize: 14, fontWeight: FontWeight.bold, color: textColor)),
           const SizedBox(height: 4),
-          Text(message, style: GoogleFonts.lexend(fontSize: 12, color: Colors.grey[400])),
+          Text(message, style: GoogleFonts.lexend(fontSize: 12, color: isDark ? Colors.grey[400] : Colors.grey[600])),
         ],
       ),
     );
@@ -234,20 +264,28 @@ class AdvisoryScreen extends StatelessWidget {
     required Color iconColor,
     required VoidCallback onTap,
     bool isLocked = false,
+    required Color textColor,
+    required Color borderColor,
   }) {
+    // For light mode, we might want to dampen the gradient or just use solid colors.
+    // However, the user asked for consistent "Dark Theme" feel which implies some vibrancy.
+    // But for light mode "pure white" requirement, maybe these cards should just be white with colored icons?
+    // Let's stick to the gradient but maybe cleaner for Light mode or just keep it as "feature cards".
+    // Actually, let's keep the gradient for "Tools" as they are engaging, but maybe opacity adjustment.
+    
     return GestureDetector(
       onTap: onTap,
       child: Container(
         decoration: BoxDecoration(
           gradient: LinearGradient(
-            colors: gradientColors.map((c) => c.withOpacity(0.4)).toList(),
+            colors: gradientColors.map((c) => c.withOpacity(0.8)).toList(), // Increased opacity for better visibility
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
           ),
           borderRadius: BorderRadius.circular(24),
-          border: Border.all(color: Colors.white.withOpacity(0.1)),
+          border: Border.all(color: borderColor),
           boxShadow: [
-             BoxShadow(color: Colors.black.withOpacity(0.2), blurRadius: 8, offset: const Offset(0, 4)),
+             BoxShadow(color: Colors.black.withOpacity(0.1), blurRadius: 8, offset: const Offset(0, 4)),
           ],
         ),
         child: Stack(
@@ -274,7 +312,7 @@ class AdvisoryScreen extends StatelessWidget {
                         style: GoogleFonts.lexend(
                           fontSize: 16,
                           fontWeight: FontWeight.bold,
-                          color: Colors.white,
+                          color: Colors.white, // Always white on gradient
                         ),
                       ),
                       const SizedBox(height: 4),
@@ -282,7 +320,7 @@ class AdvisoryScreen extends StatelessWidget {
                         subtitle,
                         style: GoogleFonts.lexend(
                           fontSize: 12,
-                          color: Colors.white60,
+                          color: Colors.white70,
                         ),
                       ),
                     ],
@@ -303,29 +341,33 @@ class AdvisoryScreen extends StatelessWidget {
   }
 
   Widget _buildBottomNav(BuildContext context) {
-    const Color primaryColor = Color(0xFF13EC6A);
-    final navBg = const Color(0xFF0D1C13).withOpacity(0.9);
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
+    final navBg = isDark ? const Color(0xFF0D1C13).withOpacity(0.9) : Colors.white;
+    const primaryColor = Color(0xFF13EC6A);
     
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
       decoration: BoxDecoration(
         color: navBg,
-        border: const Border(top: BorderSide(color: Colors.white10)),
+        border: Border(top: BorderSide(color: isDark ? Colors.white10 : Colors.black12)),
+        boxShadow: isDark ? [] : [BoxShadow(color: Colors.black.withOpacity(0.05), blurRadius: 10, offset: const Offset(0, -5))],
       ),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          _buildNavItem(Icons.home, 'Home', false, primaryColor, onTap: () => Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => const HomeScreen()))),
-          _buildNavItem(Icons.spa, 'Guide', false, primaryColor, onTap: () => Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => const CropGuideScreen()))),
-          _buildNavItem(Icons.history, 'History', false, primaryColor, onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const ChatHistoryScreen()))),
-          _buildNavItem(Icons.tips_and_updates, 'Advisory', true, primaryColor), // Active
-          _buildNavItem(Icons.store, 'Market', false, primaryColor, onTap: () => Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => const MarketplaceScreen()))),
+          _buildNavItem(context, Icons.home, 'Home', false, primaryColor, onTap: () => Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => const HomeScreen()))),
+          _buildNavItem(context, Icons.spa, 'Guide', false, primaryColor, onTap: () => Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => const CropGuideScreen()))),
+          _buildNavItem(context, Icons.history, 'History', false, primaryColor, onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const ChatHistoryScreen()))),
+          _buildNavItem(context, Icons.tips_and_updates, 'Advisory', true, primaryColor), // Active
+          _buildNavItem(context, Icons.store, 'Market', false, primaryColor, onTap: () => Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => const MarketplaceScreen()))),
         ],
       ),
     );
   }
 
-  Widget _buildNavItem(IconData icon, String label, bool isSelected, Color color, {VoidCallback? onTap}) {
+  Widget _buildNavItem(BuildContext context, IconData icon, String label, bool isSelected, Color color, {VoidCallback? onTap}) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     return GestureDetector(
       onTap: onTap,
       child: Column(
@@ -333,9 +375,9 @@ class AdvisoryScreen extends StatelessWidget {
         children: [
           if (isSelected) 
             Container(height: 6, width: 6, margin: const EdgeInsets.only(bottom: 2), decoration: BoxDecoration(color: color, shape: BoxShape.circle, boxShadow: [BoxShadow(color: color, blurRadius: 6)])),
-          Icon(icon, color: isSelected ? color : Colors.grey, size: 26),
+          Icon(icon, color: isSelected ? color : (isDark ? Colors.grey : Colors.grey[400]), size: 26),
           const SizedBox(height: 2),
-          Text(label, style: GoogleFonts.lexend(fontSize: 10, fontWeight: isSelected ? FontWeight.bold : FontWeight.w500, color: isSelected ? color : Colors.grey)),
+          Text(label, style: GoogleFonts.lexend(fontSize: 10, fontWeight: isSelected ? FontWeight.bold : FontWeight.w500, color: isSelected ? color : (isDark ? Colors.grey : Colors.grey[600]))),
         ],
       ),
     );

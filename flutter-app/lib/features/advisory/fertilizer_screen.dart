@@ -15,16 +15,22 @@ class FertilizerScreen extends StatefulWidget {
 }
 
 class _FertilizerScreenState extends State<FertilizerScreen> {
-  static const Color primaryColor = Color(0xFF13EC6A);
-  static const Color backgroundDark = Color(0xFF102217);
-  static const Color surfaceDark = Color(0xFF1C2C23);
-  static const Color surfaceHighlight = Color(0xFF25382E);
-  static const Color textSecondary = Color(0xFF9DB9A8);
+  // Hardcoded colors removed in favor of theme extraction
+
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
+    final primaryColor = theme.primaryColor;
+    final textColor = theme.textTheme.bodyMedium?.color ?? Colors.black87;
+    final containerColor = isDark ? const Color(0xFF1C2C23) : Colors.white;
+    final borderColor = theme.dividerColor.withOpacity(0.1);
+    final textSecondary = isDark ? const Color(0xFF9DB9A8) : Colors.grey[600];
+    final surfaceHighlight = isDark ? const Color(0xFF25382E) : Colors.grey[100]!;
+
     return Scaffold(
-      backgroundColor: backgroundDark,
+      backgroundColor: theme.scaffoldBackgroundColor,
       body: SafeArea(
         child: Column(
           children: [
@@ -38,10 +44,10 @@ class _FertilizerScreenState extends State<FertilizerScreen> {
                     child: Container(
                       width: 40, height: 40,
                       decoration: BoxDecoration(
-                        color: Colors.white.withOpacity(0.05),
+                        color: isDark ? Colors.white.withOpacity(0.05) : Colors.black.withOpacity(0.05),
                         shape: BoxShape.circle,
                       ),
-                      child: const Icon(Icons.arrow_back, color: Colors.white, size: 24),
+                      child: Icon(Icons.arrow_back, color: isDark ? Colors.white : Colors.black87, size: 24),
                     ),
                   ),
                   Expanded(
@@ -51,7 +57,8 @@ class _FertilizerScreenState extends State<FertilizerScreen> {
                       style: GoogleFonts.lexend(
                         fontSize: 18,
                         fontWeight: FontWeight.bold,
-                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                        color: textColor,
                       ),
                     ),
                   ),
@@ -71,9 +78,9 @@ class _FertilizerScreenState extends State<FertilizerScreen> {
                   Container(
                     padding: const EdgeInsets.all(16),
                     decoration: BoxDecoration(
-                      color: surfaceDark,
+                      color: containerColor,
                       borderRadius: BorderRadius.circular(24),
-                      border: Border.all(color: Colors.white.withOpacity(0.05)),
+                      border: Border.all(color: borderColor),
                     ),
                     child: Column(
                       children: [
@@ -118,7 +125,7 @@ class _FertilizerScreenState extends State<FertilizerScreen> {
                                   ),
                                 ],
                               ),
-                              child: const Icon(Icons.play_arrow, color: backgroundDark, size: 32),
+                              child: Icon(Icons.play_arrow, color: isDark ? const Color(0xFF102217) : Colors.white, size: 32),
                             ),
                           ],
                         ),
@@ -132,7 +139,7 @@ class _FertilizerScreenState extends State<FertilizerScreen> {
                               child: Container(
                                 height: 6,
                                 decoration: BoxDecoration(
-                                  color: Colors.white.withOpacity(0.1),
+                                  color: isDark ? Colors.white.withOpacity(0.1) : Colors.black.withOpacity(0.1),
                                   borderRadius: BorderRadius.circular(3),
                                 ),
                                 child: Row(
@@ -149,7 +156,7 @@ class _FertilizerScreenState extends State<FertilizerScreen> {
                               ),
                             ),
                             const SizedBox(width: 12),
-                            const Text('2:45', style: TextStyle(color: textSecondary, fontSize: 12)),
+                            const Text('2:45', style: TextStyle(color: Colors.grey, fontSize: 12)),
                           ],
                         ),
                       ],
@@ -167,10 +174,10 @@ class _FertilizerScreenState extends State<FertilizerScreen> {
                         style: GoogleFonts.lexend(
                           fontSize: 24,
                           fontWeight: FontWeight.bold,
-                          color: Colors.white,
+                          color: textColor,
                         ),
                       ),
-                      const Icon(Icons.compare_arrows, color: textSecondary),
+                      Icon(Icons.compare_arrows, color: isDark ? Colors.grey : Colors.grey[600]),
                     ],
                   ),
                   const SizedBox(height: 16),
@@ -212,7 +219,7 @@ class _FertilizerScreenState extends State<FertilizerScreen> {
                       icon: const Icon(Icons.replay, color: primaryColor),
                       label: const Text(
                         'Replay Advice',
-                        style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+                        style: TextStyle(color: textColor, fontWeight: FontWeight.bold),
                       ),
                     ),
                   ),
@@ -236,12 +243,20 @@ class _FertilizerScreenState extends State<FertilizerScreen> {
     required Color iconColor,
     required List<Map<String, dynamic>> tags,
   }) {
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
+    final containerColor = isDark ? const Color(0xFF1C2C23) : Colors.white;
+    final borderColor = theme.dividerColor.withOpacity(0.1);
+    final textSecondary = isDark ? const Color(0xFF9DB9A8) : Colors.grey[600];
+    final surfaceHighlight = isDark ? const Color(0xFF25382E) : Colors.grey[100]!;
+    final textColor = theme.textTheme.bodyMedium?.color ?? Colors.black87;
+
     return Container(
       decoration: BoxDecoration(
-        color: surfaceDark,
+        color: containerColor,
         borderRadius: BorderRadius.circular(24),
-        border: Border.all(color: Colors.white.withOpacity(0.05)),
-        boxShadow: const [BoxShadow(color: Colors.black26, blurRadius: 10, offset: Offset(0, 4))],
+        border: Border.all(color: borderColor),
+        boxShadow: isDark ? [] : [const BoxShadow(color: Colors.black12, blurRadius: 10, offset: Offset(0, 4))],
       ),
       clipBehavior: Clip.antiAlias,
       child: Column(
@@ -258,7 +273,7 @@ class _FertilizerScreenState extends State<FertilizerScreen> {
                     gradient: LinearGradient(
                       begin: Alignment.bottomCenter,
                       end: Alignment.topCenter,
-                      colors: [surfaceDark, Colors.transparent],
+                      colors: [containerColor, Colors.transparent],
                     ),
                   ),
                 ),
@@ -319,7 +334,7 @@ class _FertilizerScreenState extends State<FertilizerScreen> {
                       decoration: BoxDecoration(
                         color: surfaceHighlight,
                         borderRadius: BorderRadius.circular(20),
-                        border: Border.all(color: Colors.white.withOpacity(0.05)),
+                        border: Border.all(color: borderColor),
                       ),
                       child: Row(
                         mainAxisSize: MainAxisSize.min,
@@ -328,7 +343,7 @@ class _FertilizerScreenState extends State<FertilizerScreen> {
                           const SizedBox(width: 6),
                           Text(
                             tag['label'] as String,
-                            style: const TextStyle(color: Colors.white, fontSize: 13, fontWeight: FontWeight.w500),
+                            style: TextStyle(color: textColor, fontSize: 13, fontWeight: FontWeight.w500),
                           ),
                         ],
                       ),
@@ -344,28 +359,33 @@ class _FertilizerScreenState extends State<FertilizerScreen> {
   }
 
   Widget _buildBottomNav(BuildContext context) {
-    final navBg = backgroundDark.withOpacity(0.95);
-    
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
+    final navBg = isDark ? const Color(0xFF0D1C13).withOpacity(0.9) : Colors.white;
+    const primaryColor = Color(0xFF13EC6A);
+
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
       decoration: BoxDecoration(
         color: navBg,
-        border: const Border(top: BorderSide(color: Colors.white10)),
+        border: Border(top: BorderSide(color: isDark ? Colors.white10 : Colors.black12)),
+        boxShadow: isDark ? [] : [BoxShadow(color: Colors.black.withOpacity(0.05), blurRadius: 10, offset: const Offset(0, -5))],
       ),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          _buildNavItem(Icons.home, 'Home', false, primaryColor, onTap: () => Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => const HomeScreen()))),
-          _buildNavItem(Icons.spa, 'Guide', false, primaryColor, onTap: () => Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => const CropGuideScreen()))),
-          _buildNavItem(Icons.history, 'History', false, primaryColor, onTap: () => Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => const ChatHistoryScreen()))),
-          _buildNavItem(Icons.tips_and_updates, 'Advisory', true, primaryColor, onTap: () => Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => const AdvisoryScreen()))),
-          _buildNavItem(Icons.store, 'Market', false, primaryColor, onTap: () => Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => const MarketplaceScreen()))),
+          _buildNavItem(context, Icons.home, 'Home', false, primaryColor, onTap: () => Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => const HomeScreen()))),
+          _buildNavItem(context, Icons.spa, 'Guide', false, primaryColor, onTap: () => Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => const CropGuideScreen()))),
+          _buildNavItem(context, Icons.history, 'History', false, primaryColor, onTap: () => Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => const ChatHistoryScreen()))),
+          _buildNavItem(context, Icons.tips_and_updates, 'Advisory', true, primaryColor, onTap: () => Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => const AdvisoryScreen()))),
+          _buildNavItem(context, Icons.store, 'Market', false, primaryColor, onTap: () => Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => const MarketplaceScreen()))),
         ],
       ),
     );
   }
 
-  Widget _buildNavItem(IconData icon, String label, bool isSelected, Color color, {VoidCallback? onTap}) {
+  Widget _buildNavItem(BuildContext context, IconData icon, String label, bool isSelected, Color color, {VoidCallback? onTap}) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     return GestureDetector(
       onTap: onTap,
       child: Column(
@@ -373,9 +393,9 @@ class _FertilizerScreenState extends State<FertilizerScreen> {
         children: [
           if (isSelected) 
             Container(height: 6, width: 6, margin: const EdgeInsets.only(bottom: 2), decoration: BoxDecoration(color: color, shape: BoxShape.circle, boxShadow: [BoxShadow(color: color, blurRadius: 6)])),
-          Icon(icon, color: isSelected ? color : Colors.grey, size: 26),
+          Icon(icon, color: isSelected ? color : (isDark ? Colors.grey : Colors.grey[400]), size: 26),
           const SizedBox(height: 2),
-          Text(label, style: GoogleFonts.lexend(fontSize: 10, fontWeight: isSelected ? FontWeight.bold : FontWeight.w500, color: isSelected ? color : Colors.grey)),
+          Text(label, style: GoogleFonts.lexend(fontSize: 10, fontWeight: isSelected ? FontWeight.bold : FontWeight.w500, color: isSelected ? color : (isDark ? Colors.grey : Colors.grey[600]))),
         ],
       ),
     );

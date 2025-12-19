@@ -20,8 +20,15 @@ class CropPlanScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
+    final primaryColor = theme.primaryColor;
+    final textColor = theme.textTheme.bodyMedium?.color ?? Colors.black87;
+    final containerColor = isDark ? const Color(0xFF1A2C22) : Colors.white;
+    final borderColor = theme.dividerColor.withOpacity(0.1);
+
     return Scaffold(
-      backgroundColor: backgroundDark,
+      backgroundColor: theme.scaffoldBackgroundColor,
       body: SafeArea(
         child: Column(
           children: [
@@ -39,7 +46,7 @@ class CropPlanScreen extends StatelessWidget {
                         style: GoogleFonts.lexend(
                           fontSize: 18,
                           fontWeight: FontWeight.bold,
-                          color: Colors.white,
+                          color: textColor,
                         ),
                       ),
                       Text(
@@ -53,7 +60,7 @@ class CropPlanScreen extends StatelessWidget {
                       ),
                     ],
                   ),
-                  _buildCircleBtn(Icons.more_vert, color: Colors.transparent, iconColor: Colors.white54),
+                  _buildCircleBtn(Icons.more_vert, color: Colors.transparent, iconColor: textColor.withOpacity(0.54)),
                 ],
               ),
             ),
@@ -78,10 +85,10 @@ class CropPlanScreen extends StatelessWidget {
                         Container(
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(24),
-                            gradient: const LinearGradient(
+                            gradient: LinearGradient(
                               begin: Alignment.bottomCenter,
                               end: Alignment.topCenter,
-                              colors: [backgroundDark, Colors.transparent],
+                              colors: [theme.scaffoldBackgroundColor, Colors.transparent],
                             ),
                           ),
                         ),
@@ -103,7 +110,7 @@ class CropPlanScreen extends StatelessWidget {
                                   style: GoogleFonts.lexend(
                                     fontSize: 12,
                                     fontWeight: FontWeight.bold,
-                                    color: backgroundDark,
+                                    color: theme.scaffoldBackgroundColor,
                                   ),
                                 ),
                               ],
@@ -145,9 +152,10 @@ class CropPlanScreen extends StatelessWidget {
                   Container(
                     padding: const EdgeInsets.all(12),
                     decoration: BoxDecoration(
-                      color: surfaceDark,
+                      color: containerColor,
                       borderRadius: BorderRadius.circular(16),
-                      border: Border.all(color: Colors.white.withOpacity(0.05)),
+                      border: Border.all(color: borderColor),
+                      boxShadow: isDark ? [] : [BoxShadow(color: Colors.black12, blurRadius: 4, offset: const Offset(0, 2))],
                     ),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -169,7 +177,7 @@ class CropPlanScreen extends StatelessWidget {
                                 Text(
                                   'AI ASSISTANT',
                                   style: TextStyle(
-                                    color: Colors.white,
+                                    color: textColor,
                                     fontSize: 10,
                                     fontWeight: FontWeight.bold,
                                     letterSpacing: 0.5,
@@ -198,7 +206,7 @@ class CropPlanScreen extends StatelessWidget {
                                 style: GoogleFonts.lexend(
                                   fontSize: 10,
                                   fontWeight: FontWeight.bold,
-                                  color: backgroundDark,
+                                  color: theme.scaffoldBackgroundColor,
                                   letterSpacing: 0.5,
                                 ),
                               ),
@@ -230,18 +238,19 @@ class CropPlanScreen extends StatelessWidget {
                   Container(
                     padding: const EdgeInsets.all(20),
                     decoration: BoxDecoration(
-                      color: surfaceDark,
+                      color: containerColor,
                       borderRadius: BorderRadius.circular(16),
-                      border: Border.all(color: Colors.white.withOpacity(0.05)),
+                      border: Border.all(color: borderColor),
+                      boxShadow: isDark ? [] : [BoxShadow(color: Colors.black12, blurRadius: 4, offset: const Offset(0, 2))],
                     ),
                     child: Column(
                       children: [
-                        _buildFitReason(Icons.landscape, Colors.orange, 'Sandy Soil Compatibility', 'Your soil test indicates loose texture. Maize roots penetrate deep easily here, unlike clay-heavy crops.'),
+                        _buildFitReason(context, Icons.landscape, Colors.orange, 'Sandy Soil Compatibility', 'Your soil test indicates loose texture. Maize roots penetrate deep easily here, unlike clay-heavy crops.', textColor),
                         Padding(
                           padding: const EdgeInsets.symmetric(vertical: 16),
-                          child: Divider(color: Colors.white.withOpacity(0.05), height: 1),
+                          child: Divider(color: borderColor, height: 1),
                         ),
-                        _buildFitReason(Icons.wb_sunny, Colors.yellow, 'Kharif Season Alignment', 'Current temperatures (28°C avg) are optimal for germination. It fits perfectly into your 3-month rotation window.'),
+                        _buildFitReason(context, Icons.wb_sunny, Colors.orangeAccent, 'Kharif Season Alignment', 'Current temperatures (28°C avg) are optimal for germination. It fits perfectly into your 3-month rotation window.', textColor),
                       ],
                     ),
                   ),
@@ -252,23 +261,25 @@ class CropPlanScreen extends StatelessWidget {
                   Row(
                     children: [
                       Expanded(
-                        child: _buildStatCard(
+                        child: _buildStatCard(context,
                           icon: Icons.agriculture, 
                           trendIcon: Icons.trending_up, 
                           value: '25-30', 
                           unit: 'QUINTALS / ACRE', 
                           subtext: 'Est. revenue: ₹55k - ₹65k',
-                          highlightColor: primaryColor
+                          highlightColor: primaryColor,
+                          textColor: textColor
                         ),
                       ),
                       const SizedBox(width: 12),
                       Expanded(
-                        child: _buildStatCard(
+                        child: _buildStatCard(context,
                           icon: Icons.water_drop, 
                           value: '500-600', 
                           unit: 'MM TOTAL WATER', 
                           subtext: 'Critical irrigation: Flowering', 
-                          highlightColor: Colors.blue
+                          highlightColor: Colors.blue,
+                          textColor: textColor
                         ),
                       ),
                     ],
@@ -289,7 +300,7 @@ class CropPlanScreen extends StatelessWidget {
                             style: GoogleFonts.lexend(
                               fontSize: 18,
                               fontWeight: FontWeight.bold,
-                              color: Colors.white,
+                              color: textColor,
                             ),
                           ),
                         ],
@@ -309,23 +320,24 @@ class CropPlanScreen extends StatelessWidget {
                   Container(
                     padding: const EdgeInsets.all(20),
                     decoration: BoxDecoration(
-                      color: surfaceDark,
+                      color: containerColor,
                       borderRadius: BorderRadius.circular(16),
-                      border: Border.all(color: Colors.white.withOpacity(0.05)),
+                      border: Border.all(color: borderColor),
+                      boxShadow: isDark ? [] : [BoxShadow(color: Colors.black12, blurRadius: 4, offset:const Offset(0,2))],
                     ),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
                           'This crop carries minimal risk for your specific profile. Here is why:',
-                          style: TextStyle(color: Colors.grey[300], fontSize: 14, fontWeight: FontWeight.w500),
+                          style: TextStyle(color: isDark ? Colors.grey[300] : Colors.grey[600], fontSize: 14, fontWeight: FontWeight.w500),
                         ),
                         const SizedBox(height: 16),
-                        _buildRiskItem('Pest Resistance', 'This hybrid variety is resistant to Fall Armyworm, a common local threat.'),
+                        _buildRiskItem(context, 'Pest Resistance', 'This hybrid variety is resistant to Fall Armyworm, a common local threat.', textColor),
                         const SizedBox(height: 12),
-                        _buildRiskItem('Market Stability', 'Local starch factories have guaranteed buy-back programs this season.'),
+                        _buildRiskItem(context, 'Market Stability', 'Local starch factories have guaranteed buy-back programs this season.', textColor),
                         const SizedBox(height: 12),
-                        _buildRiskItem('Short Duration', '90-day maturity reduces exposure to late-season heavy rains.'),
+                        _buildRiskItem(context, 'Short Duration', '90-day maturity reduces exposure to late-season heavy rains.', textColor),
                       ],
                     ),
                   ),
@@ -355,11 +367,14 @@ class CropPlanScreen extends StatelessWidget {
                       // 1. Fertilizer Guidance (Suggestions)
                       GestureDetector(
                         onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const FertilizerScreen())),
-                        child: _buildToolCard(
+                        child: _buildToolCard(context,
                           icon: Icons.science, 
                           iconColor: Colors.blue, 
                           title: 'Fertilizer Guidance', 
-                          subtitle: 'Comparison of Organic vs NPK'
+                          subtitle: 'Comparison of Organic vs NPK',
+                          textColor: textColor,
+                          containerColor: containerColor,
+                          borderColor: borderColor,
                         ),
                       ),
                       const SizedBox(height: 12),
@@ -367,11 +382,14 @@ class CropPlanScreen extends StatelessWidget {
                       // 2. What If Analysis
                       GestureDetector(
                         onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const WhatIfScreen())),
-                        child: _buildToolCard(
+                        child: _buildToolCard(context,
                           icon: Icons.compare_arrows, 
                           iconColor: Colors.purple, 
                           title: 'What-If Comparison', 
-                          subtitle: 'Compare Maize vs Sorghum'
+                          subtitle: 'Compare Maize vs Sorghum',
+                          textColor: textColor,
+                          containerColor: containerColor,
+                          borderColor: borderColor,
                         ),
                       ),
                       const SizedBox(height: 12),
@@ -381,11 +399,14 @@ class CropPlanScreen extends StatelessWidget {
                         onTap: () {
                            Navigator.push(context, MaterialPageRoute(builder: (_) => const RiskAssessmentScreen()));
                         },
-                        child: _buildToolCard(
+                        child: _buildToolCard(context,
                           icon: Icons.shield, 
                           iconColor: Colors.orange, 
                           title: 'Risk Awareness', 
-                          subtitle: 'View market and pest risks'
+                          subtitle: 'View market and pest risks',
+                          textColor: textColor,
+                          containerColor: containerColor,
+                          borderColor: borderColor,
                         ),
                       ),
                     ],
@@ -398,7 +419,7 @@ class CropPlanScreen extends StatelessWidget {
                     onPressed: () {},
                     style: ElevatedButton.styleFrom(
                       backgroundColor: primaryColor,
-                      foregroundColor: backgroundDark,
+                      foregroundColor: theme.scaffoldBackgroundColor,
                       minimumSize: const Size(double.infinity, 56),
                       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
                       elevation: 8,
@@ -450,14 +471,15 @@ class CropPlanScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildFitReason(IconData icon, Color iconColor, String title, String desc) {
+  Widget _buildFitReason(BuildContext context, IconData icon, Color iconColor, String title, String desc, Color textColor) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Container(
           padding: const EdgeInsets.all(6),
           decoration: BoxDecoration(
-            color: surfaceHighlight,
+            color: isDark ? const Color(0xFF23392D) : Colors.grey.shade100,
             borderRadius: BorderRadius.circular(8),
           ),
           child: Icon(icon, color: iconColor, size: 20),
@@ -469,12 +491,12 @@ class CropPlanScreen extends StatelessWidget {
             children: [
               Text(
                 title,
-                style: const TextStyle(color: Colors.white, fontSize: 14, fontWeight: FontWeight.bold),
+                style: TextStyle(color: textColor, fontSize: 14, fontWeight: FontWeight.bold),
               ),
               const SizedBox(height: 4),
               Text(
                 desc,
-                style: TextStyle(color: Colors.grey[400], fontSize: 14, height: 1.5),
+                style: TextStyle(color: isDark ? Colors.grey[400] : Colors.grey[600], fontSize: 14, height: 1.5),
               ),
             ],
           ),
@@ -526,7 +548,8 @@ class CropPlanScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildRiskItem(String title, String desc) {
+  Widget _buildRiskItem(BuildContext context, String title, String desc, Color textColor) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -535,9 +558,9 @@ class CropPlanScreen extends StatelessWidget {
         Expanded(
           child: RichText(
             text: TextSpan(
-              style: TextStyle(color: Colors.grey[400], fontSize: 12, height: 1.5),
+              style: TextStyle(color: isDark ? Colors.grey[400] : Colors.grey[600], fontSize: 12, height: 1.5),
               children: [
-                TextSpan(text: '$title: ', style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
+                TextSpan(text: '$title: ', style: TextStyle(color: textColor, fontWeight: FontWeight.bold)),
                 TextSpan(text: desc),
               ],
             ),
@@ -547,13 +570,23 @@ class CropPlanScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildToolCard({required IconData icon, required Color iconColor, required String title, required String subtitle}) {
+  Widget _buildToolCard(BuildContext context, {
+    required IconData icon, 
+    required Color iconColor, 
+    required String title, 
+    required String subtitle,
+    required Color textColor,
+    required Color containerColor,
+    required Color borderColor,
+  }) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: surfaceDark,
+        color: containerColor,
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: Colors.white.withOpacity(0.05)),
+        border: Border.all(color: borderColor),
+        boxShadow: isDark ? [] : [BoxShadow(color: Colors.black12, blurRadius: 4, offset:const Offset(0,2))],
       ),
       child: Row(
         children: [
@@ -575,48 +608,53 @@ class CropPlanScreen extends StatelessWidget {
                   style: GoogleFonts.lexend(
                     fontSize: 16,
                     fontWeight: FontWeight.bold,
-                    color: Colors.white,
+                    color: textColor,
                   ),
                 ),
                 Text(
                   subtitle,
                   style: TextStyle(
                     fontSize: 12,
-                    color: Colors.grey[400],
+                    color: isDark ? Colors.grey[400] : Colors.grey[600],
                   ),
                 ),
               ],
             ),
           ),
-          const Icon(Icons.chevron_right, color: Colors.grey),
+          Icon(Icons.chevron_right, color: isDark ? Colors.grey : Colors.grey[400]),
         ],
       ),
     );
   }
 
   Widget _buildBottomNav(BuildContext context) {
-    final navBg = const Color(0xFF0D1C13).withOpacity(0.9);
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
+    final navBg = isDark ? const Color(0xFF0D1C13).withOpacity(0.9) : Colors.white;
+    const primaryColor = Color(0xFF13EC6A);
     
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
       decoration: BoxDecoration(
         color: navBg,
-        border: const Border(top: BorderSide(color: Colors.white10)),
+        border: Border(top: BorderSide(color: isDark ? Colors.white10 : Colors.black12)),
+        boxShadow: isDark ? [] : [BoxShadow(color: Colors.black.withOpacity(0.05), blurRadius: 10, offset: const Offset(0, -5))],
       ),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          _buildNavItem(Icons.home, 'Home', false, primaryColor, onTap: () => Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => const HomeScreen()))),
-          _buildNavItem(Icons.spa, 'Guide', false, primaryColor, onTap: () => Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => const CropGuideScreen()))),
-          _buildNavItem(Icons.history, 'History', false, primaryColor, onTap: () => Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => const ChatHistoryScreen()))),
-          _buildNavItem(Icons.tips_and_updates, 'Advisory', true, primaryColor, onTap: () => Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => const AdvisoryScreen()))),
-          _buildNavItem(Icons.store, 'Market', false, primaryColor, onTap: () => Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => const MarketplaceScreen()))),
+          _buildNavItem(context, Icons.home, 'Home', false, primaryColor, onTap: () => Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => const HomeScreen()))),
+          _buildNavItem(context, Icons.spa, 'Guide', false, primaryColor, onTap: () => Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => const CropGuideScreen()))),
+          _buildNavItem(context, Icons.history, 'History', false, primaryColor, onTap: () => Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => const ChatHistoryScreen()))),
+          _buildNavItem(context, Icons.tips_and_updates, 'Advisory', true, primaryColor, onTap: () => Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => const AdvisoryScreen()))),
+          _buildNavItem(context, Icons.store, 'Market', false, primaryColor, onTap: () => Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => const MarketplaceScreen()))),
         ],
       ),
     );
   }
 
-  Widget _buildNavItem(IconData icon, String label, bool isSelected, Color color, {VoidCallback? onTap}) {
+  Widget _buildNavItem(BuildContext context, IconData icon, String label, bool isSelected, Color color, {VoidCallback? onTap}) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     return GestureDetector(
       onTap: onTap,
       child: Column(
@@ -624,9 +662,9 @@ class CropPlanScreen extends StatelessWidget {
         children: [
           if (isSelected) 
             Container(height: 6, width: 6, margin: const EdgeInsets.only(bottom: 2), decoration: BoxDecoration(color: color, shape: BoxShape.circle, boxShadow: [BoxShadow(color: color, blurRadius: 6)])),
-          Icon(icon, color: isSelected ? color : Colors.grey, size: 26),
+          Icon(icon, color: isSelected ? color : (isDark ? Colors.grey : Colors.grey[400]), size: 26),
           const SizedBox(height: 2),
-          Text(label, style: GoogleFonts.lexend(fontSize: 10, fontWeight: isSelected ? FontWeight.bold : FontWeight.w500, color: isSelected ? color : Colors.grey)),
+          Text(label, style: GoogleFonts.lexend(fontSize: 10, fontWeight: isSelected ? FontWeight.bold : FontWeight.w500, color: isSelected ? color : (isDark ? Colors.grey : Colors.grey[600]))),
         ],
       ),
     );

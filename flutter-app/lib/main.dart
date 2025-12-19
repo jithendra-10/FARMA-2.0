@@ -11,7 +11,7 @@ class MyApp extends StatelessWidget {
 
   // Define theme colors from your HTML
   static const Color primaryColor = Color(0xFF13EC6A);
-  static const Color backgroundLightColor = Color(0xFFF6F8F7);
+  static const Color backgroundLightColor = Colors.white; // Completely white as requested
   static const Color backgroundDarkColor = Color(0xFF102217);
   static const Color surfaceDarkColor = Color(0xFF1A2C22);
 
@@ -24,6 +24,7 @@ class MyApp extends StatelessWidget {
       brightness: Brightness.light,
       primaryColor: primaryColor,
       scaffoldBackgroundColor: backgroundLightColor,
+      cardColor: Colors.white,
       colorScheme: ColorScheme.fromSeed(
         seedColor: primaryColor,
         brightness: Brightness.light,
@@ -31,7 +32,8 @@ class MyApp extends StatelessWidget {
         background: backgroundLightColor,
         surface: Colors.white,
       ),
-      textTheme: GoogleFonts.splineSansTextTheme(baseTextTheme).apply(bodyColor: Colors.black87),
+      iconTheme: const IconThemeData(color: Colors.black87),
+      textTheme: GoogleFonts.splineSansTextTheme(baseTextTheme).apply(bodyColor: Colors.black87, displayColor: Colors.black87),
       useMaterial3: true,
     );
 

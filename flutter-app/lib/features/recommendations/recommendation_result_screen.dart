@@ -19,8 +19,15 @@ class RecommendationResultScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
+    final primaryColor = theme.primaryColor;
+    final textColor = theme.textTheme.bodyMedium?.color ?? Colors.black87;
+    final containerColor = isDark ? const Color(0xFF1A2C22) : Colors.white;
+    final borderColor = theme.dividerColor.withOpacity(0.1);
+
     return Scaffold(
-      backgroundColor: backgroundDark,
+      backgroundColor: theme.scaffoldBackgroundColor,
       body: SafeArea(
         child: Column(
           children: [
@@ -30,7 +37,7 @@ class RecommendationResultScreen extends StatelessWidget {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  _buildCircleBtn(Icons.arrow_back, onTap: () => Navigator.pop(context)),
+                  _buildCircleBtn(context, Icons.arrow_back, onTap: () => Navigator.pop(context)),
                   Column(
                     children: [
                       Text(
@@ -38,7 +45,7 @@ class RecommendationResultScreen extends StatelessWidget {
                         style: GoogleFonts.lexend(
                           fontSize: 18,
                           fontWeight: FontWeight.bold,
-                          color: Colors.white,
+                          color: textColor,
                         ),
                       ),
                       Text(
@@ -133,6 +140,9 @@ class RecommendationResultScreen extends StatelessWidget {
                     imageUrl: 'https://lh3.googleusercontent.com/aida-public/AB6AXuCBCsZR70QAnAo_qy3hIXVaXfEwVBT0b4n3A-7pqxQbCwnDT9hHlnAsVK__bSkZ0UtPehbW1yDV9BbqX_RsX58h1VnIUMl-r5ycxa9qW_Ytg09xSa89Gzv_2FYHSLdREhA03bDZt3_0n82j8IXUlFZLr-8mgHeK_rsQTuREeCkWCnavbux5RWvqYV7qmkMESe7TpdTvs3D0ZDOKgozj0MpcSmULOUDIoXyu0q1g0kG4G5VpZdJP2d38q0jUBMzpIn3TtX7Q62_5q4g',
                     matchBgColor: primaryColor,
                     matchTextColor: backgroundDark,
+                    textColor: textColor,
+                    containerColor: containerColor,
+                    borderColor: borderColor,
                   ),
 
                   // Card 2: Groundnut
@@ -146,6 +156,9 @@ class RecommendationResultScreen extends StatelessWidget {
                     imageUrl: 'https://lh3.googleusercontent.com/aida-public/AB6AXuAAuM6G03euAFea_tUWZtuwHt9veBSYfSgV3_6faBCF4PRKJgtxYOiHt8HsN-3LTfza0nOBKHF4qHHnT90OadpdknSuW6ty8Kq01fvpVl8sDYD6wESQtx_wSbLaqH8ToeYmWB8HBVs7kERadsVIWV3vqkNUM7rHyT7yqKQVRIP8OY7bFVSNkCGcQUHkwW1eIQw9rRkzK8aOgbAJI22DTIx6wBlmvreNqi5dSzvrO2y3xhm8X6MzK5K9QwldxrOP9NaBQsA7QqMqXXA',
                     matchBgColor: const Color(0xFFEEC812),
                     matchTextColor: backgroundDark,
+                    textColor: textColor,
+                    containerColor: containerColor,
+                    borderColor: borderColor,
                   ),
 
                    // Card 3: Pearl Millet
@@ -159,6 +172,9 @@ class RecommendationResultScreen extends StatelessWidget {
                     imageUrl: 'https://lh3.googleusercontent.com/aida-public/AB6AXuDGPfEZHvK9_i2QYmnhXxRWQ0Hv3E_3o12hOozCNea-VFGCwKGeBzw6Dq3bLP2rECTkEmrwcBlu6yzA1XB3deokdNpFeDhzhrYibAix2jjiP1YIUgq_rVnpncNT-cMXykIDNaqFBI6fWF_nlNueNAgZfH_Rxdj1oeq4iaEaq6qBgtKxXT4CY8zMVyXpbd74Dcx0MkFmamhep6suiYZZWo0ETub5NrVKbrafIOeFW0aju633TQYKvmdohA7xTRASaQdRRg3f8suyIHw',
                     matchBgColor: Colors.white24,
                     matchTextColor: Colors.white,
+                    textColor: textColor,
+                    containerColor: containerColor,
+                    borderColor: borderColor,
                   ),
 
                   const Center(
@@ -190,16 +206,20 @@ class RecommendationResultScreen extends StatelessWidget {
     required String imageUrl,
     required Color matchBgColor,
     required Color matchTextColor,
+    required Color textColor,
+    required Color containerColor,
+    required Color borderColor,
   }) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     return Container(
       margin: const EdgeInsets.only(bottom: 24),
       decoration: BoxDecoration(
-        color: surfaceDark,
+        color: containerColor,
         borderRadius: BorderRadius.circular(24),
-        border: Border.all(color: Colors.white.withOpacity(0.05)),
-        boxShadow: [
+        border: Border.all(color: borderColor),
+        boxShadow: isDark ? [] : [
           BoxShadow(
-            color: Colors.black.withOpacity(0.2),
+            color: Colors.black.withOpacity(0.05),
             blurRadius: 10,
             offset: const Offset(0, 4),
           ),
@@ -226,7 +246,7 @@ class RecommendationResultScreen extends StatelessWidget {
                     gradient: LinearGradient(
                       begin: Alignment.bottomCenter,
                       end: Alignment.topCenter,
-                      colors: [surfaceDark, Colors.transparent],
+                      colors: [containerColor, Colors.transparent],
                     ),
                   ),
                 ),
@@ -264,7 +284,7 @@ class RecommendationResultScreen extends StatelessWidget {
                   style: GoogleFonts.lexend(
                     fontSize: 24,
                     fontWeight: FontWeight.bold,
-                    color: Colors.white,
+                    color: textColor,
                   ),
                 ),
                 const SizedBox(height: 4),
@@ -281,9 +301,9 @@ class RecommendationResultScreen extends StatelessWidget {
                 Container(
                   padding: const EdgeInsets.all(12),
                   decoration: BoxDecoration(
-                    color: Colors.white.withOpacity(0.05),
+                    color: isDark ? Colors.white.withOpacity(0.05) : Colors.grey.withOpacity(0.05),
                     borderRadius: BorderRadius.circular(12),
-                    border: Border.all(color: Colors.white.withOpacity(0.05)),
+                    border: Border.all(color: borderColor),
                   ),
                   child: Row(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -293,7 +313,7 @@ class RecommendationResultScreen extends StatelessWidget {
                       Expanded(
                         child: Text(
                            description,
-                           style: TextStyle(color: Colors.grey[300], fontSize: 14, height: 1.5),
+                           style: TextStyle(color: isDark ? Colors.grey[300] : Colors.grey[600], fontSize: 14, height: 1.5),
                         ),
                       ),
                     ],
@@ -314,7 +334,7 @@ class RecommendationResultScreen extends StatelessWidget {
                     minimumSize: const Size(double.infinity, 56),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(16),
-                      side: BorderSide(color: Colors.white.withOpacity(0.1)),
+                      side: BorderSide(color: borderColor),
                     ),
                     elevation: 0,
                   ),
@@ -338,13 +358,14 @@ class RecommendationResultScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildCircleBtn(IconData icon, {VoidCallback? onTap}) {
+  Widget _buildCircleBtn(BuildContext context, IconData icon, {VoidCallback? onTap}) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     return GestureDetector(
       onTap: onTap,
       child: Container(
         width: 48, height: 48,
-        decoration: const BoxDecoration(
-          color: Colors.white,
+        decoration: BoxDecoration(
+          color: isDark ? Colors.white : Colors.grey[200],
           shape: BoxShape.circle,
         ),
         child: Icon(icon, color: Colors.black),
@@ -353,29 +374,33 @@ class RecommendationResultScreen extends StatelessWidget {
   }
 
   Widget _buildBottomNav(BuildContext context) {
-    // Reusing the same nav style
-     final navBg = const Color(0xFF0D1C13).withOpacity(0.9);
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
+    final navBg = isDark ? const Color(0xFF0D1C13).withOpacity(0.9) : Colors.white;
+    const primaryColor = Color(0xFF13EC6A);
     
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
       decoration: BoxDecoration(
         color: navBg,
-        border: const Border(top: BorderSide(color: Colors.white10)),
+        border: Border(top: BorderSide(color: isDark ? Colors.white10 : Colors.black12)),
+        boxShadow: isDark ? [] : [BoxShadow(color: Colors.black.withOpacity(0.05), blurRadius: 10, offset: const Offset(0, -5))],
       ),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          _buildNavItem(Icons.home, 'Home', false, primaryColor, onTap: () => Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => const HomeScreen()))),
-          _buildNavItem(Icons.spa, 'Guide', false, primaryColor, onTap: () => Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => const CropGuideScreen()))),
-          _buildNavItem(Icons.history, 'History', false, primaryColor, onTap: () => Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => const ChatHistoryScreen()))),
-          _buildNavItem(Icons.tips_and_updates, 'Advisory', false, primaryColor, onTap: () => Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => const AdvisoryScreen()))),
-          _buildNavItem(Icons.store, 'Market', false, primaryColor, onTap: () => Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => const MarketplaceScreen()))),
+          _buildNavItem(context, Icons.home, 'Home', false, primaryColor, onTap: () => Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => const HomeScreen()))),
+          _buildNavItem(context, Icons.spa, 'Guide', false, primaryColor, onTap: () => Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => const CropGuideScreen()))),
+          _buildNavItem(context, Icons.history, 'History', false, primaryColor, onTap: () => Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => const ChatHistoryScreen()))),
+          _buildNavItem(context, Icons.tips_and_updates, 'Advisory', false, primaryColor, onTap: () => Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => const AdvisoryScreen()))),
+          _buildNavItem(context, Icons.store, 'Market', false, primaryColor, onTap: () => Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => const MarketplaceScreen()))),
         ],
       ),
     );
   }
 
-  Widget _buildNavItem(IconData icon, String label, bool isSelected, Color color, {VoidCallback? onTap}) {
+  Widget _buildNavItem(BuildContext context, IconData icon, String label, bool isSelected, Color color, {VoidCallback? onTap}) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     return GestureDetector(
       onTap: onTap,
       child: Column(
@@ -383,9 +408,9 @@ class RecommendationResultScreen extends StatelessWidget {
         children: [
           if (isSelected) 
             Container(height: 6, width: 6, margin: const EdgeInsets.only(bottom: 2), decoration: BoxDecoration(color: color, shape: BoxShape.circle, boxShadow: [BoxShadow(color: color, blurRadius: 6)])),
-          Icon(icon, color: isSelected ? color : Colors.grey, size: 26),
+          Icon(icon, color: isSelected ? color : (isDark ? Colors.grey : Colors.grey[400]), size: 26),
           const SizedBox(height: 2),
-          Text(label, style: GoogleFonts.lexend(fontSize: 10, fontWeight: isSelected ? FontWeight.bold : FontWeight.w500, color: isSelected ? color : Colors.grey)),
+          Text(label, style: GoogleFonts.lexend(fontSize: 10, fontWeight: isSelected ? FontWeight.bold : FontWeight.w500, color: isSelected ? color : (isDark ? Colors.grey : Colors.grey[600]))),
         ],
       ),
     );

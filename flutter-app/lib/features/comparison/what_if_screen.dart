@@ -19,17 +19,12 @@ class WhatIfScreen extends StatelessWidget {
     const Color surfaceLight = Color(0xFFFFFFFF);
     const Color textDark = Color(0xFF111814);
     
-    // Check Theme (assuming dark mode for consistency with previous screens, 
-    // but the HTML provided has light mode by default with dark mode support.
-    // I will stick to the app's established dark theme preference or handle both if needed.
-    // Given the rest of the app is heavy on Dark Mode, I will implement Dark Mode by default 
-    // or respect system theme. Let's start with a dark-theme focused implementation 
-    // to match the previous screens provided in context.)
+    // Check Theme
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
     
-    // Force dark mode for consistency with `CropPlanScreen` and user preference for "dark/green aesthetic"
-    const bool isDark = true;
-    final Color bgColor = isDark ? backgroundDark : const Color(0xFFF6F8F7);
-    final Color textColor = isDark ? Colors.white : textDark;
+    final Color bgColor = theme.scaffoldBackgroundColor;
+    final Color textColor = theme.textTheme.bodyMedium?.color ?? Colors.black87;
     final Color cardBg = isDark ? surfaceDark : surfaceLight;
     final Color borderColor = isDark ? Colors.white.withOpacity(0.1) : Colors.grey[200]!;
 
@@ -439,14 +434,18 @@ class WhatIfScreen extends StatelessWidget {
   }
 
   Widget _buildBottomNav(BuildContext context) {
-    const Color primaryColor = Color(0xFF13EC6A);
-    final navBg = const Color(0xFF0D1C13).withOpacity(0.9);
     
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
+    final navBg = isDark ? const Color(0xFF0D1C13).withOpacity(0.9) : Colors.white;
+    const primaryColor = Color(0xFF13EC6A);
+
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
       decoration: BoxDecoration(
         color: navBg,
-        border: const Border(top: BorderSide(color: Colors.white10)),
+        border: Border(top: BorderSide(color: isDark ? Colors.white10 : Colors.black12)),
+        boxShadow: isDark ? [] : [BoxShadow(color: Colors.black.withOpacity(0.05), blurRadius: 10, offset: const Offset(0, -5))],
       ),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -461,7 +460,8 @@ class WhatIfScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildNavItem(IconData icon, String label, bool isSelected, Color color, {VoidCallback? onTap}) {
+  Widget _buildNavItem(BuildContext context, IconData icon, String label, bool isSelected, Color color, {VoidCallback? onTap}) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     return GestureDetector(
       onTap: onTap,
       child: Column(
@@ -469,9 +469,9 @@ class WhatIfScreen extends StatelessWidget {
         children: [
           if (isSelected) 
             Container(height: 6, width: 6, margin: const EdgeInsets.only(bottom: 2), decoration: BoxDecoration(color: color, shape: BoxShape.circle, boxShadow: [BoxShadow(color: color, blurRadius: 6)])),
-          Icon(icon, color: isSelected ? color : Colors.grey, size: 26),
+          Icon(icon, color: isSelected ? color : (isDark ? Colors.grey : Colors.grey[400]), size: 26),
           const SizedBox(height: 2),
-          Text(label, style: GoogleFonts.lexend(fontSize: 10, fontWeight: isSelected ? FontWeight.bold : FontWeight.w500, color: isSelected ? color : Colors.grey)),
+          Text(label, style: GoogleFonts.lexend(fontSize: 10, fontWeight: isSelected ? FontWeight.bold : FontWeight.w500, color: isSelected ? color : (isDark ? Colors.grey : Colors.grey[600]))),
         ],
       ),
     );

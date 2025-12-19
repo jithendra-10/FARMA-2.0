@@ -12,14 +12,16 @@ class RiskAssessmentScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Styles matching design
-    const Color primaryColor = Color(0xFF13EC6A);
-    const Color backgroundDark = Color(0xFF102217);
-    const Color surfaceDark = Color(0xFF1C2E24);
-    const Color textSecondary = Color(0xFF8BA898);
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
+    final primaryColor = theme.primaryColor;
+    final textColor = theme.textTheme.bodyMedium?.color ?? Colors.black87;
+    final containerColor = isDark ? const Color(0xFF1C2E24) : Colors.white;
+    final borderColor = theme.dividerColor.withOpacity(0.1);
+    final textSecondary = isDark ? const Color(0xFF8BA898) : Colors.grey[600];
 
     return Scaffold(
-      backgroundColor: backgroundDark,
+      backgroundColor: theme.scaffoldBackgroundColor,
       body: SafeArea(
         child: Column(
           children: [
@@ -38,9 +40,9 @@ class RiskAssessmentScreen extends StatelessWidget {
                           padding: const EdgeInsets.all(8),
                           decoration: BoxDecoration(
                             shape: BoxShape.circle,
-                            color: Colors.white.withOpacity(0.1),
+                            color: isDark ? Colors.white.withOpacity(0.1) : Colors.black.withOpacity(0.05),
                           ),
-                          child: const Icon(Icons.arrow_back, color: Colors.white),
+                          child: Icon(Icons.arrow_back, color: isDark ? Colors.white : Colors.black87),
                         ),
                       ),
                       const SizedBox(width: 12),
@@ -49,7 +51,7 @@ class RiskAssessmentScreen extends StatelessWidget {
                         style: GoogleFonts.lexend(
                           fontSize: 20,
                           fontWeight: FontWeight.bold,
-                          color: Colors.white,
+                          color: textColor,
                         ),
                       ),
                     ],
@@ -90,6 +92,10 @@ class RiskAssessmentScreen extends StatelessWidget {
                     icon: Icons.water_drop,
                     iconBg: const Color(0xFF1B5E20).withOpacity(0.2),
                     iconColor: primaryColor,
+                    textColor: textColor,
+                    containerColor: containerColor,
+                    borderColor: borderColor,
+                    subTextColor: textSecondary!,
                   ),
                   
                   const SizedBox(height: 16),
@@ -104,6 +110,10 @@ class RiskAssessmentScreen extends StatelessWidget {
                     icon: Icons.pest_control,
                     iconBg: const Color(0xFFF57F17).withOpacity(0.1),
                     iconColor: Colors.amber,
+                    textColor: textColor,
+                    containerColor: containerColor,
+                    borderColor: borderColor,
+                    subTextColor: textSecondary!,
                   ),
 
                   const SizedBox(height: 16),
@@ -118,6 +128,10 @@ class RiskAssessmentScreen extends StatelessWidget {
                     icon: Icons.storefront,
                     iconBg: const Color(0xFF1B5E20).withOpacity(0.2),
                     iconColor: primaryColor,
+                    textColor: textColor,
+                    containerColor: containerColor,
+                    borderColor: borderColor,
+                    subTextColor: textSecondary!,
                   ),
 
                   const SizedBox(height: 24),
@@ -131,8 +145,9 @@ class RiskAssessmentScreen extends StatelessWidget {
                          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("Connecting to advisor...")));
                       },
                       style: OutlinedButton.styleFrom(
+                        backgroundColor: isDark ? Colors.transparent : primaryColor,
                         foregroundColor: Colors.white,
-                        side: const BorderSide(color: primaryColor, width: 2),
+                        side: BorderSide(color: primaryColor, width: 2),
                         padding: const EdgeInsets.symmetric(vertical: 16),
                         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
                       ),
@@ -164,16 +179,23 @@ class RiskAssessmentScreen extends StatelessWidget {
     required IconData icon,
     required Color iconBg,
     required Color iconColor,
+    required Color textColor,
+    required Color containerColor,
+    required Color borderColor,
+    required Color subTextColor,
   }) {
     // Dark mode overrides for card look
-    const cardBg = Color(0xFF1C2E24);
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: cardBg,
+        color: containerColor,
         borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: Colors.white.withOpacity(0.05)),
+        border: Border.all(color: borderColor),
+        boxShadow: isDark ? [] : [
+          BoxShadow(color: Colors.black.withOpacity(0.05), blurRadius: 10, offset: const Offset(0, 4)),
+        ],
       ),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -202,8 +224,8 @@ class RiskAssessmentScreen extends StatelessWidget {
                 const SizedBox(height: 12),
                 Text(
                   title,
-                  style: const TextStyle(
-                    color: Colors.white,
+                  style: TextStyle(
+                    color: textColor,
                     fontSize: 18,
                     fontWeight: FontWeight.bold,
                   ),
@@ -212,7 +234,7 @@ class RiskAssessmentScreen extends StatelessWidget {
                 Text(
                   description,
                   style: const TextStyle(
-                    color: Color(0xFF8BA898),
+                    color: subTextColor,
                     fontSize: 14,
                     height: 1.4,
                   ),
@@ -235,29 +257,34 @@ class RiskAssessmentScreen extends StatelessWidget {
   }
 
   Widget _buildBottomNav(BuildContext context) {
-    const Color primaryColor = Color(0xFF13EC6A);
-    final navBg = const Color(0xFF0D1C13).withOpacity(0.9);
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
+    final navBg = isDark ? const Color(0xFF0D1C13).withOpacity(0.9) : Colors.white;
+    const primaryColor = Color(0xFF13EC6A);
     
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
       decoration: BoxDecoration(
         color: navBg,
-        border: const Border(top: BorderSide(color: Colors.white10)),
+        border: Border(top: BorderSide(color: isDark ? Colors.white10 : Colors.black12)),
+        boxShadow: isDark ? [] : [BoxShadow(color: Colors.black.withOpacity(0.05), blurRadius: 10, offset: const Offset(0, -5))],
       ),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          _buildNavItem(Icons.home, 'Home', false, primaryColor, onTap: () => Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => const HomeScreen()))),
-          _buildNavItem(Icons.spa, 'Guide', false, primaryColor, onTap: () => Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => const CropGuideScreen()))),
-          _buildNavItem(Icons.history, 'History', false, primaryColor, onTap: () => Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => const ChatHistoryScreen()))),
-          _buildNavItem(Icons.tips_and_updates, 'Advisory', true, primaryColor, onTap: () => Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => const AdvisoryScreen()))),
-          _buildNavItem(Icons.store, 'Market', false, primaryColor, onTap: () => Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => const MarketplaceScreen()))),
+          _buildNavItem(context, Icons.home, 'Home', false, primaryColor, onTap: () => Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => const HomeScreen()))),
+          _buildNavItem(context, Icons.spa, 'Guide', false, primaryColor, onTap: () => Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => const CropGuideScreen()))),
+          _buildNavItem(context, Icons.history, 'History', false, primaryColor, onTap: () => Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => const ChatHistoryScreen()))),
+          _buildNavItem(context, Icons.tips_and_updates, 'Advisory', true, primaryColor, onTap: () => Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => const AdvisoryScreen()))),
+          _buildNavItem(context, Icons.store, 'Market', false, primaryColor, onTap: () => Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => const MarketplaceScreen()))),
         ],
       ),
     );
   }
 
-  Widget _buildNavItem(IconData icon, String label, bool isSelected, Color color, {VoidCallback? onTap}) {
+  Widget _buildNavItem(BuildContext context, IconData icon, String label, bool isSelected, Color color, {VoidCallback? onTap}) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final secondaryColor = isDark ? const Color(0xFF8BA898) : Colors.grey[600];
     return GestureDetector(
       onTap: onTap,
       child: Column(
@@ -265,9 +292,9 @@ class RiskAssessmentScreen extends StatelessWidget {
         children: [
           if (isSelected) 
             Container(height: 6, width: 6, margin: const EdgeInsets.only(bottom: 2), decoration: BoxDecoration(color: color, shape: BoxShape.circle, boxShadow: [BoxShadow(color: color, blurRadius: 6)])),
-          Icon(icon, color: isSelected ? color : const Color(0xFF8BA898), size: 26),
+          Icon(icon, color: isSelected ? color : secondaryColor, size: 26),
           const SizedBox(height: 2),
-          Text(label, style: GoogleFonts.lexend(fontSize: 10, fontWeight: isSelected ? FontWeight.bold : FontWeight.w500, color: isSelected ? color : const Color(0xFF8BA898))),
+          Text(label, style: GoogleFonts.lexend(fontSize: 10, fontWeight: isSelected ? FontWeight.bold : FontWeight.w500, color: isSelected ? color : secondaryColor)),
         ],
       ),
     );

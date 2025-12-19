@@ -30,11 +30,16 @@ class _MarketplaceScreenState extends State<MarketplaceScreen> with SingleTicker
 
   @override
   Widget build(BuildContext context) {
-    const Color primaryColor = Color(0xFF13EC6A);
-    const Color backgroundDark = Color(0xFF102217);
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
+    final primaryColor = theme.primaryColor;
+    final textColor = theme.textTheme.bodyMedium?.color ?? Colors.white;
+    // For containers that need contrast:
+    final containerColor = isDark ? Colors.white.withOpacity(0.05) : Colors.grey.shade100;
+    final iconColor = isDark ? Colors.white : Colors.black87;
 
     return Scaffold(
-      backgroundColor: backgroundDark,
+      backgroundColor: theme.scaffoldBackgroundColor,
       body: SafeArea(
         child: Column(
           children: [
@@ -49,9 +54,9 @@ class _MarketplaceScreenState extends State<MarketplaceScreen> with SingleTicker
                       padding: const EdgeInsets.all(8),
                       decoration: BoxDecoration(
                         shape: BoxShape.circle,
-                        color: Colors.white.withOpacity(0.05),
+                        color: containerColor,
                       ),
-                      child: const Icon(Icons.arrow_back, color: Colors.white),
+                      child: Icon(Icons.arrow_back, color: iconColor),
                     ),
                   ),
                   const SizedBox(width: 16),
@@ -60,7 +65,7 @@ class _MarketplaceScreenState extends State<MarketplaceScreen> with SingleTicker
                     style: GoogleFonts.lexend(
                       fontSize: 24,
                       fontWeight: FontWeight.bold,
-                      color: Colors.white,
+                      color: textColor,
                     ),
                   ),
                   const Spacer(),
@@ -70,23 +75,23 @@ class _MarketplaceScreenState extends State<MarketplaceScreen> with SingleTicker
                       Container(
                         padding: const EdgeInsets.all(8),
                         decoration: BoxDecoration(
-                          color: Colors.white.withOpacity(0.05),
+                          color: containerColor,
                           shape: BoxShape.circle,
                         ),
-                        child: const Icon(Icons.shopping_cart, color: Colors.white),
+                        child: Icon(Icons.shopping_cart, color: iconColor),
                       ),
                       Positioned(
                         right: 0,
                         top: 0,
                         child: Container(
                           padding: const EdgeInsets.all(4),
-                          decoration: const BoxDecoration(
+                          decoration: BoxDecoration(
                             color: primaryColor,
                             shape: BoxShape.circle,
                           ),
                           child: Text(
                             '2',
-                            style: GoogleFonts.lexend(fontSize: 10, fontWeight: FontWeight.bold, color: backgroundDark),
+                            style: GoogleFonts.lexend(fontSize: 10, fontWeight: FontWeight.bold, color: Colors.black87),
                           ),
                         ),
                       ),
@@ -126,8 +131,8 @@ class _MarketplaceScreenState extends State<MarketplaceScreen> with SingleTicker
               child: TabBarView(
                 controller: _tabController,
                 children: [
-                  _buildShopTab(primaryColor, backgroundDark),
-                  _buildContractsTab(primaryColor),
+                  _buildShopTab(context, primaryColor, containerColor, textColor, iconColor),
+                  _buildContractsTab(context, primaryColor, containerColor, textColor),
                 ],
               ),
             ),
@@ -138,7 +143,13 @@ class _MarketplaceScreenState extends State<MarketplaceScreen> with SingleTicker
     );
   }
 
-  Widget _buildShopTab(Color primaryColor, Color backgroundDark) {
+  Widget _buildShopTab(BuildContext context, Color primaryColor, Color containerColor, Color textColor, Color iconColor) {
+    // For text field border/bg
+    final inputFill = Theme.of(context).brightness == Brightness.dark 
+      ? const Color(0xFF1c2e20) 
+      : Colors.white;
+    final borderColor = Theme.of(context).dividerColor; // or Colors.grey[300]
+
     return SingleChildScrollView(
       padding: const EdgeInsets.symmetric(horizontal: 16),
       child: Column(
@@ -149,9 +160,10 @@ class _MarketplaceScreenState extends State<MarketplaceScreen> with SingleTicker
             padding: const EdgeInsets.symmetric(horizontal: 16),
             height: 56,
             decoration: BoxDecoration(
-              color: const Color(0xFF1c2e20), // surface-dark
+              color: inputFill,
               borderRadius: BorderRadius.circular(16),
-              border: Border.all(color: Colors.white.withOpacity(0.1)),
+              border: Border.all(color: borderColor.withOpacity(0.1)),
+              boxShadow: Theme.of(context).brightness == Brightness.light ? [BoxShadow(color: Colors.black12, blurRadius: 4, offset:const Offset(0,2))] : [],
             ),
             child: Row(
               children: [
@@ -159,7 +171,7 @@ class _MarketplaceScreenState extends State<MarketplaceScreen> with SingleTicker
                 const SizedBox(width: 12),
                 Expanded(
                   child: TextField(
-                    style: GoogleFonts.lexend(color: Colors.white),
+                    style: GoogleFonts.lexend(color: textColor),
                     decoration: InputDecoration(
                       hintText: 'Search seeds, fertilizers...',
                       hintStyle: GoogleFonts.lexend(color: Colors.grey[500]),
@@ -170,7 +182,7 @@ class _MarketplaceScreenState extends State<MarketplaceScreen> with SingleTicker
                 Container(
                   padding: const EdgeInsets.all(8),
                   decoration: BoxDecoration(
-                    color: Colors.white.withOpacity(0.05),
+                    color: containerColor,
                     borderRadius: BorderRadius.circular(8),
                   ),
                   child: const Icon(Icons.mic, color: Color(0xFF13EC6A), size: 20),
@@ -185,11 +197,11 @@ class _MarketplaceScreenState extends State<MarketplaceScreen> with SingleTicker
             scrollDirection: Axis.horizontal,
             child: Row(
               children: [
-                _buildCategoryChip('All Items', true, primaryColor),
-                _buildCategoryChip('🌱 Seeds', false, primaryColor),
-                _buildCategoryChip('🧪 Fertilizers', false, primaryColor),
-                _buildCategoryChip('🛡️ Pesticides', false, primaryColor),
-                _buildCategoryChip('🔧 Tools', false, primaryColor),
+                _buildCategoryChip(context, 'All Items', true, primaryColor),
+                _buildCategoryChip(context, '🌱 Seeds', false, primaryColor),
+                _buildCategoryChip(context, '🧪 Fertilizers', false, primaryColor),
+                _buildCategoryChip(context, '🛡️ Pesticides', false, primaryColor),
+                _buildCategoryChip(context, '🔧 Tools', false, primaryColor),
               ],
             ),
           ),
@@ -228,7 +240,7 @@ class _MarketplaceScreenState extends State<MarketplaceScreen> with SingleTicker
                     ),
                     child: Text(
                       'SEASON SPECIAL',
-                      style: GoogleFonts.lexend(fontSize: 10, fontWeight: FontWeight.bold, color: backgroundDark),
+                      style: GoogleFonts.lexend(fontSize: 10, fontWeight: FontWeight.bold, color: Colors.black87),
                     ),
                   ),
                   const SizedBox(height: 8),
@@ -252,7 +264,7 @@ class _MarketplaceScreenState extends State<MarketplaceScreen> with SingleTicker
                         ),
                         child: Text(
                           'View',
-                          style: GoogleFonts.lexend(fontSize: 12, fontWeight: FontWeight.bold, color: backgroundDark),
+                          style: GoogleFonts.lexend(fontSize: 12, fontWeight: FontWeight.bold, color: Colors.black87),
                         ),
                       ),
                     ],
@@ -269,7 +281,7 @@ class _MarketplaceScreenState extends State<MarketplaceScreen> with SingleTicker
             children: [
               Text(
                 'Recommended',
-                style: GoogleFonts.lexend(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.white),
+                style: GoogleFonts.lexend(fontSize: 18, fontWeight: FontWeight.bold, color: textColor),
               ),
               Text(
                 'See All',
@@ -288,33 +300,38 @@ class _MarketplaceScreenState extends State<MarketplaceScreen> with SingleTicker
             mainAxisSpacing: 16,
             crossAxisSpacing: 16,
             children: [
-              _buildProductCard(
+            children: [
+              _buildProductCard(context,
                 title: 'Hybrid Corn Seeds - 5kg',
                 price: '₹1,050',
                 imageUrl: 'https://lh3.googleusercontent.com/aida-public/AB6AXuC4WliPVy6cqiSsBaRILu4DyikyI3uZbFdkBtUTU6hNB7pF1p1u_iPPrPSk5xwwZ0D0Y0awfNPyrlzkptO_X3-khGkxWFKbZnaDD3CbcY0wSgSrhIZU0cZM0KDRmuaimxbwsjEL7DYtAfzGYRQIUuLsaarPrIkuiGBpJhjqfWrYDI-qPZq2VHSPG-VfvHWDe6UUD1x4iIjo5A1SjnNct5BZzRbfwfi_RpQyaSfcYIHoUiVkSx4d3a19u6u-myyE6NCn0C8HxtPxhmQ',
                 tag: 'Drought Resistant',
                 tagColor: primaryColor,
+                textColor: textColor,
               ),
-              _buildProductCard(
+              _buildProductCard(context,
                 title: 'NPK 15-15-15 Premium',
                 price: '₹2,100',
                 imageUrl: 'https://lh3.googleusercontent.com/aida-public/AB6AXuDbw7AfKQsP3u_lJn2dbvZNsj5kKsTMWobTEr5F5KhjzOgS4PSh_9R7-E-UWv_PD8vKo-Es_-kuNw-s4S4aMEtxUZvY6msc8QNshaYJtEyyUKozLieYg78HqFUpTiVWLr8aLVCH66-MmeT_UWL7tQBdwXhk9aNUajKWlFAzI8In1F9YBSX-3OaBQimpqiw9aal9RE9eKXdOXQAEE4Re-Tap1pLsquMolneA0VAeEmvbb1W05UFMpV8QxDScPGlO0pFU0cAeI586S6Y',
                 tag: 'Growth Boost',
                 tagColor: Colors.blueAccent,
+                textColor: textColor,
               ),
-              _buildProductCard(
+              _buildProductCard(context,
                 title: 'EcoGuard Pest Spray',
                 price: '₹1,575',
                 imageUrl: 'https://lh3.googleusercontent.com/aida-public/AB6AXuB8YAM1Sbb_BzSJgFHYdBmcgyX0lV48F2n3B175u9DcL1fKHibhKdMfEZUylcigCrNG_v_XI5FwJZ78497JygNNbysKGfiq5913YlSm4-KRyGUx6PAJrjT3EBnEYeBAnyYQfZ8iILOZUSV2qIFjcDI07xUEMB9j5OP9sy7XqONyMIj5eOH309hB4ea7ZRIGYo5KB9deO-cklExpf2JRdHjnoH0AFlDVK7J-0YqMWtamzXvUki5DMpXThUcZYwvQi6SmkpL0QglerGg',
                 tag: 'Insect Control',
                 tagColor: Colors.redAccent,
+                textColor: textColor,
               ),
-              _buildProductCard(
+              _buildProductCard(context,
                 title: 'Roma Tomato Seeds',
                 price: '₹750',
                 imageUrl: 'https://lh3.googleusercontent.com/aida-public/AB6AXuBPXzvOFJxQ7V3PfMMelmfGmJKD-OsxqiFdjxTjrnMSHvvWWPO0tC39G-mSKfBlakB2LTeMpc9kzj4icqTu_5MM2a7ZzziaYQj9YKCr1e0s2HFGSBnSY0MqWz8oSW_ZiNn_VhqKBWIOXqM_CkfJDB7gM7zfmwAA4vD09CqBEmC8RVcs76FE6pkrtpCufPcoTCI-9z9LJWM101-T4n0MBpktEpKNTpTwuL82RMxOfVlqHUIfaYVJnu3j351__ks7GPf6Gi6qtVrBIyM',
                 tag: 'High Yield',
                 tagColor: primaryColor,
+                textColor: textColor,
               ),
             ],
           ),
@@ -324,15 +341,16 @@ class _MarketplaceScreenState extends State<MarketplaceScreen> with SingleTicker
     );
   }
 
-  Widget _buildCategoryChip(String label, bool isSelected, Color primaryColor) {
+  Widget _buildCategoryChip(BuildContext context, String label, bool isSelected, Color primaryColor) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     return Container(
       margin: const EdgeInsets.only(right: 12),
       padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
       decoration: BoxDecoration(
-        color: isSelected ? primaryColor : Colors.white.withOpacity(0.05),
+        color: isSelected ? primaryColor : (isDark ? Colors.white.withOpacity(0.05) : Colors.black.withOpacity(0.05)),
         borderRadius: BorderRadius.circular(24),
         border: Border.all(
-          color: isSelected ? primaryColor : Colors.white.withOpacity(0.1),
+          color: isSelected ? primaryColor : (isDark ? Colors.white.withOpacity(0.1) : Colors.black.withOpacity(0.1)),
         ),
         boxShadow: isSelected ? [BoxShadow(color: primaryColor.withOpacity(0.3), blurRadius: 8)] : null,
       ),
@@ -341,24 +359,30 @@ class _MarketplaceScreenState extends State<MarketplaceScreen> with SingleTicker
         style: GoogleFonts.lexend(
           fontSize: 14,
           fontWeight: isSelected ? FontWeight.bold : FontWeight.w500,
-          color: isSelected ? const Color(0xFF102217) : Colors.white,
+          color: isSelected ? const Color(0xFF102217) : (isDark ? Colors.white : Colors.black87),
         ),
       ),
     );
   }
 
-  Widget _buildProductCard({
+  Widget _buildProductCard(BuildContext context, {
     required String title,
     required String price,
     required String imageUrl,
     required String tag,
     required Color tagColor,
+    required Color textColor,
   }) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final cardBg = isDark ? const Color(0xFF1c2e20) : Colors.white;
+    final borderColor = Theme.of(context).dividerColor.withOpacity(0.1);
+
     return Container(
       decoration: BoxDecoration(
-        color: const Color(0xFF1c2e20),
+        color: cardBg,
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: Colors.white.withOpacity(0.05)),
+        border: Border.all(color: borderColor),
+        boxShadow: isDark ? [] : [BoxShadow(color: Colors.black12, blurRadius: 6, offset: const Offset(0, 4))],
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -399,13 +423,13 @@ class _MarketplaceScreenState extends State<MarketplaceScreen> with SingleTicker
                     children: [
                       Text(tag, style: GoogleFonts.lexend(fontSize: 10, fontWeight: FontWeight.bold, color: tagColor)),
                       const SizedBox(height: 4),
-                      Text(title, style: GoogleFonts.lexend(fontSize: 14, fontWeight: FontWeight.bold, color: Colors.white), maxLines: 2, overflow: TextOverflow.ellipsis),
+                      Text(title, style: GoogleFonts.lexend(fontSize: 14, fontWeight: FontWeight.bold, color: textColor), maxLines: 2, overflow: TextOverflow.ellipsis),
                     ],
                    ),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text(price, style: GoogleFonts.lexend(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.white)),
+                      Text(price, style: GoogleFonts.lexend(fontSize: 16, fontWeight: FontWeight.bold, color: textColor)),
                       Container(
                         padding: const EdgeInsets.all(4),
                         decoration: const BoxDecoration(
@@ -413,7 +437,7 @@ class _MarketplaceScreenState extends State<MarketplaceScreen> with SingleTicker
                             shape: BoxShape.rectangle,
                             borderRadius: BorderRadius.all(Radius.circular(8)),
                         ),
-                        child: const Icon(Icons.add, color: Color(0xFF102217), size: 20),
+                        child: Icon(Icons.add, color: Colors.black87, size: 20),
                       ),
                     ],
                   )
@@ -426,11 +450,12 @@ class _MarketplaceScreenState extends State<MarketplaceScreen> with SingleTicker
     );
   }
 
-  Widget _buildContractsTab(Color primaryColor) {
+  Widget _buildContractsTab(BuildContext context, Color primaryColor, Color containerColor, Color textColor) {
     return ListView(
       padding: const EdgeInsets.all(16),
       children: [
         _buildContractCard(
+          context: context,
           company: "Lay's India",
           logo: "L",
           crop: "Potato (Chip Grade)",
@@ -438,8 +463,10 @@ class _MarketplaceScreenState extends State<MarketplaceScreen> with SingleTicker
           rate: "₹25/kg",
           expiry: "Expires in 2 days",
           color: Colors.redAccent,
+          textColor: textColor,
         ),
         _buildContractCard(
+          context: context,
           company: "Kissan Ketchup",
           logo: "K",
           crop: "Organic Tomato",
@@ -447,8 +474,10 @@ class _MarketplaceScreenState extends State<MarketplaceScreen> with SingleTicker
           rate: "₹40/kg",
           expiry: "Expires in 5 days",
           color: Colors.orange,
+          textColor: textColor,
         ),
         _buildContractCard(
+          context: context,
           company: "ITC Aashirvaad",
           logo: "I",
           crop: "Premium Wheat",
@@ -456,12 +485,14 @@ class _MarketplaceScreenState extends State<MarketplaceScreen> with SingleTicker
           rate: "₹32/kg",
           expiry: "Expires in 10 days",
           color: Colors.blue,
+          textColor: textColor,
         ),
       ],
     );
   }
 
   Widget _buildContractCard({
+    required BuildContext context,
     required String company,
     required String logo,
     required String crop,
@@ -469,14 +500,20 @@ class _MarketplaceScreenState extends State<MarketplaceScreen> with SingleTicker
     required String rate,
     required String expiry,
     required Color color,
+    required Color textColor,
   }) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final cardBg = isDark ? const Color(0xFF183222) : Colors.white;
+    final borderColor = Theme.of(context).dividerColor.withOpacity(0.1);
+
     return Container(
       margin: const EdgeInsets.only(bottom: 16),
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: const Color(0xFF183222),
+        color: cardBg,
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: Colors.white.withOpacity(0.05)),
+        border: Border.all(color: borderColor),
+        boxShadow: isDark ? [] : [BoxShadow(color: Colors.black12, blurRadius: 4, offset: const Offset(0, 2))],
       ),
       child: Column(
         children: [
@@ -490,7 +527,7 @@ class _MarketplaceScreenState extends State<MarketplaceScreen> with SingleTicker
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(company, style: GoogleFonts.lexend(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.white)),
+                  Text(company, style: GoogleFonts.lexend(fontSize: 16, fontWeight: FontWeight.bold, color: textColor)),
                   Text(expiry, style: GoogleFonts.lexend(fontSize: 12, color: Colors.redAccent)),
                 ],
               ),
@@ -498,20 +535,20 @@ class _MarketplaceScreenState extends State<MarketplaceScreen> with SingleTicker
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                 decoration: BoxDecoration(
-                  color: Colors.white.withOpacity(0.1),
+                  color: isDark ? Colors.white.withOpacity(0.1) : Colors.grey.withOpacity(0.1),
                   borderRadius: BorderRadius.circular(8),
                 ),
                 child: Text("VERIFIED", style: GoogleFonts.lexend(fontSize: 10, fontWeight: FontWeight.bold, color: Colors.greenAccent)),
               ),
             ],
           ),
-          const Divider(color: Colors.white10, height: 24),
+          Divider(color: borderColor, height: 24),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              _buildMetric("Crop", crop),
-              _buildMetric("Qty", quantity),
-              _buildMetric("Rate", rate),
+              _buildMetric("Crop", crop, textColor),
+              _buildMetric("Qty", quantity, textColor),
+              _buildMetric("Rate", rate, textColor),
             ],
           ),
           const SizedBox(height: 16),
@@ -530,41 +567,45 @@ class _MarketplaceScreenState extends State<MarketplaceScreen> with SingleTicker
     );
   }
 
-  Widget _buildMetric(String label, String value) {
+  Widget _buildMetric(String label, String value, Color textColor) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(label, style: GoogleFonts.lexend(fontSize: 12, color: Colors.grey)),
         const SizedBox(height: 4),
-        Text(value, style: GoogleFonts.lexend(fontSize: 14, fontWeight: FontWeight.bold, color: Colors.white)),
+        Text(value, style: GoogleFonts.lexend(fontSize: 14, fontWeight: FontWeight.bold, color: textColor)),
       ],
     );
   }
 
   Widget _buildBottomNav(BuildContext context) {
-    const Color primaryColor = Color(0xFF13EC6A);
-    final navBg = const Color(0xFF0D1C13).withOpacity(0.9);
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
+    final navBg = isDark ? const Color(0xFF0D1C13).withOpacity(0.9) : Colors.white;
+    const primaryColor = Color(0xFF13EC6A);
     
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
       decoration: BoxDecoration(
         color: navBg,
-        border: const Border(top: BorderSide(color: Colors.white10)),
+        border: Border(top: BorderSide(color: isDark ? Colors.white10 : Colors.black12)),
+        boxShadow: isDark ? [] : [BoxShadow(color: Colors.black.withOpacity(0.05), blurRadius: 10, offset: const Offset(0, -5))],
       ),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          _buildNavItem(Icons.home, 'Home', false, primaryColor, onTap: () => Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => const HomeScreen()))),
-          _buildNavItem(Icons.spa, 'Guide', false, primaryColor, onTap: () => Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => const CropGuideScreen()))),
-          _buildNavItem(Icons.history, 'History', false, primaryColor, onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const ChatHistoryScreen()))),
-          _buildNavItem(Icons.tips_and_updates, 'Advisory', false, primaryColor, onTap: () => Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => const AdvisoryScreen()))),
-          _buildNavItem(Icons.store, 'Market', true, primaryColor), // Updated to 'Market' from 'Store' to match visual
+          _buildNavItem(context, Icons.home, 'Home', false, primaryColor, onTap: () => Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => const HomeScreen()))),
+          _buildNavItem(context, Icons.spa, 'Guide', false, primaryColor, onTap: () => Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => const CropGuideScreen()))),
+          _buildNavItem(context, Icons.history, 'History', false, primaryColor, onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const ChatHistoryScreen()))),
+          _buildNavItem(context, Icons.tips_and_updates, 'Advisory', false, primaryColor, onTap: () => Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => const AdvisoryScreen()))),
+          _buildNavItem(context, Icons.store, 'Market', true, primaryColor), // Updated to 'Market' from 'Store' to match visual
         ],
       ),
     );
   }
 
-  Widget _buildNavItem(IconData icon, String label, bool isSelected, Color color, {VoidCallback? onTap}) {
+  Widget _buildNavItem(BuildContext context, IconData icon, String label, bool isSelected, Color color, {VoidCallback? onTap}) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     return GestureDetector(
       onTap: onTap,
       child: Column(
@@ -572,9 +613,9 @@ class _MarketplaceScreenState extends State<MarketplaceScreen> with SingleTicker
         children: [
           if (isSelected) 
             Container(height: 6, width: 6, margin: const EdgeInsets.only(bottom: 2), decoration: BoxDecoration(color: color, shape: BoxShape.circle, boxShadow: [BoxShadow(color: color, blurRadius: 6)])),
-          Icon(icon, color: isSelected ? color : Colors.grey, size: 26),
+          Icon(icon, color: isSelected ? color : (isDark ? Colors.grey : Colors.grey[400]), size: 26),
           const SizedBox(height: 2),
-          Text(label, style: GoogleFonts.lexend(fontSize: 10, fontWeight: isSelected ? FontWeight.bold : FontWeight.w500, color: isSelected ? color : Colors.grey)),
+          Text(label, style: GoogleFonts.lexend(fontSize: 10, fontWeight: isSelected ? FontWeight.bold : FontWeight.w500, color: isSelected ? color : (isDark ? Colors.grey : Colors.grey[600]))),
         ],
       ),
     );
