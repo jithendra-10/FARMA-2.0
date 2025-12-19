@@ -168,10 +168,10 @@ class CropPlanScreen extends StatelessWidget {
                                 color: primaryColor.withOpacity(0.2),
                                 shape: BoxShape.circle,
                               ),
-                              child: const Icon(Icons.graphic_eq, color: primaryColor, size: 20),
+                              child: Icon(Icons.graphic_eq, color: primaryColor, size: 20),
                             ),
                             const SizedBox(width: 12),
-                            const Column(
+                            Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(
@@ -222,7 +222,7 @@ class CropPlanScreen extends StatelessWidget {
                   // Why this fits
                   Row(
                     children: [
-                      const Icon(Icons.psychology, color: primaryColor),
+                      Icon(Icons.psychology, color: primaryColor),
                       const SizedBox(width: 8),
                       Text(
                         'Why this crop fits',
@@ -293,7 +293,7 @@ class CropPlanScreen extends StatelessWidget {
                     children: [
                       Row(
                         children: [
-                          const Icon(Icons.shield, color: primaryColor),
+                          Icon(Icons.shield, color: primaryColor),
                           const SizedBox(width: 8),
                           Text(
                             'Risk Assessment',
@@ -312,7 +312,7 @@ class CropPlanScreen extends StatelessWidget {
                           borderRadius: BorderRadius.circular(4),
                           border: Border.all(color: primaryColor.withOpacity(0.2)),
                         ),
-                        child: const Text('LOW RISK', style: TextStyle(color: primaryColor, fontSize: 10, fontWeight: FontWeight.bold)),
+                        child: Text('LOW RISK', style: TextStyle(color: primaryColor, fontSize: 10, fontWeight: FontWeight.bold)),
                       ),
                     ],
                   ),
@@ -347,7 +347,7 @@ class CropPlanScreen extends StatelessWidget {
                   // Tools Section Title
                   Row(
                     children: [
-                      const Icon(Icons.handyman, color: primaryColor), // Changed icon to represent tools
+                      Icon(Icons.handyman, color: primaryColor), // Changed icon to represent tools
                       const SizedBox(width: 8),
                       Text(
                         'Analysis Tools',
@@ -505,7 +505,9 @@ class CropPlanScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildStatCard({required IconData icon, IconData? trendIcon, required String value, required String unit, required String subtext, required Color highlightColor}) {
+  Widget _buildStatCard(BuildContext context, {required IconData icon, IconData? trendIcon, required String value, required String unit, required String subtext, required Color highlightColor, required Color textColor}) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final surfaceDark = isDark ? const Color(0xFF183222) : Colors.white;
     return Container(
       height: 128,
       padding: const EdgeInsets.all(16),

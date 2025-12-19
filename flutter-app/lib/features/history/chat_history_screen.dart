@@ -111,7 +111,6 @@ class ChatHistoryScreen extends StatelessWidget {
     required String date,
     required String preview,
     required bool isActive,
-    required bool isActive,
     required Color textColor,
     required Color containerColor,
     required Color borderColor,

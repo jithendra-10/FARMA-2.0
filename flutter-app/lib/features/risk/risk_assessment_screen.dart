@@ -58,7 +58,7 @@ class RiskAssessmentScreen extends StatelessWidget {
                   ),
                   Container(
                     width: 48, height: 48,
-                    decoration: const BoxDecoration(
+                    decoration: BoxDecoration(
                       color: primaryColor,
                       shape: BoxShape.circle,
                     ),
@@ -69,8 +69,8 @@ class RiskAssessmentScreen extends StatelessWidget {
             ),
             
             // Meta Text
-            const Padding(
-              padding: EdgeInsets.only(bottom: 16),
+            Padding(
+              padding: const EdgeInsets.only(bottom: 16),
               child: Text(
                 'Last updated: Today, 8:00 AM',
                 style: TextStyle(color: textSecondary, fontSize: 13),
@@ -84,6 +84,7 @@ class RiskAssessmentScreen extends StatelessWidget {
                 children: [
                   // Weather Risk Card (Low)
                   _buildRiskCard(
+                    context,
                     title: 'Weather',
                     description: 'Good rain predicted for planting week. Soil moisture is optimal.',
                     riskLevel: 'LOW RISK',
@@ -102,6 +103,7 @@ class RiskAssessmentScreen extends StatelessWidget {
 
                   // Pests Risk Card (Medium)
                   _buildRiskCard(
+                    context,
                     title: 'Pests',
                     description: 'Small chance of Fall Armyworm nearby. Monitor young leaves closely.',
                     riskLevel: 'MEDIUM RISK',
@@ -120,6 +122,7 @@ class RiskAssessmentScreen extends StatelessWidget {
 
                   // Market Risk Card (Low)
                   _buildRiskCard(
+                    context,
                     title: 'Market',
                     description: 'Maize prices are stable and expected to rise next season.',
                     riskLevel: 'LOW RISK',
@@ -170,7 +173,8 @@ class RiskAssessmentScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildRiskCard({
+  Widget _buildRiskCard(
+    BuildContext context, {
     required String title,
     required String description,
     required String riskLevel,
@@ -233,7 +237,7 @@ class RiskAssessmentScreen extends StatelessWidget {
                 const SizedBox(height: 8),
                 Text(
                   description,
-                  style: const TextStyle(
+                  style: TextStyle(
                     color: subTextColor,
                     fontSize: 14,
                     height: 1.4,

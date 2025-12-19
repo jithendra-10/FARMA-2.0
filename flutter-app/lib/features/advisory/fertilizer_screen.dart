@@ -57,7 +57,6 @@ class _FertilizerScreenState extends State<FertilizerScreen> {
                       style: GoogleFonts.lexend(
                         fontSize: 18,
                         fontWeight: FontWeight.bold,
-                        fontWeight: FontWeight.bold,
                         color: textColor,
                       ),
                     ),
@@ -92,7 +91,7 @@ class _FertilizerScreenState extends State<FertilizerScreen> {
                                 children: [
                                   Row(
                                     children: [
-                                      const Icon(Icons.record_voice_over, color: primaryColor, size: 20),
+                                      Icon(Icons.record_voice_over, color: primaryColor, size: 20),
                                       const SizedBox(width: 8),
                                       const Text(
                                         'Advisor: Fertilizer Basics',
@@ -105,7 +104,7 @@ class _FertilizerScreenState extends State<FertilizerScreen> {
                                     ],
                                   ),
                                   const SizedBox(height: 4),
-                                  const Text(
+                                  Text(
                                     'Tap to listen to the explanation',
                                     style: TextStyle(color: textSecondary, fontSize: 13),
                                   ),
@@ -133,7 +132,7 @@ class _FertilizerScreenState extends State<FertilizerScreen> {
                         // Progress Bar
                         Row(
                           children: [
-                            const Text('0:00', style: TextStyle(color: primaryColor, fontSize: 12, fontWeight: FontWeight.bold)),
+                            Text('0:00', style: TextStyle(color: primaryColor, fontSize: 12, fontWeight: FontWeight.bold)),
                             const SizedBox(width: 12),
                             Expanded(
                               child: Container(
@@ -216,8 +215,8 @@ class _FertilizerScreenState extends State<FertilizerScreen> {
                   Center(
                     child: TextButton.icon(
                       onPressed: () {},
-                      icon: const Icon(Icons.replay, color: primaryColor),
-                      label: const Text(
+                      icon: Icon(Icons.replay, color: primaryColor),
+                      label: Text(
                         'Replay Advice',
                         style: TextStyle(color: textColor, fontWeight: FontWeight.bold),
                       ),
@@ -269,7 +268,7 @@ class _FertilizerScreenState extends State<FertilizerScreen> {
               children: [
                 Image.network(imageUrl, fit: BoxFit.cover),
                 Container(
-                  decoration: const BoxDecoration(
+                  decoration: BoxDecoration(
                     gradient: LinearGradient(
                       begin: Alignment.bottomCenter,
                       end: Alignment.topCenter,
@@ -316,7 +315,7 @@ class _FertilizerScreenState extends State<FertilizerScreen> {
               children: [
                 Text(
                   desc,
-                  style: const TextStyle(
+                  style: TextStyle(
                     color: textSecondary,
                     fontSize: 16,
                     height: 1.5,

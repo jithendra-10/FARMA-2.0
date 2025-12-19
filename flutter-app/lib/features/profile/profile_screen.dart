@@ -31,6 +31,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
     final borderColor = theme.dividerColor.withOpacity(0.1);
     final dangerColor = const Color(0xFFFF5252);
 
+    final surfaceDark = isDark ? const Color(0xFF183222) : Colors.white;
+
     return Scaffold(
       backgroundColor: theme.scaffoldBackgroundColor,
       body: SafeArea(
@@ -251,7 +253,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             side: BorderSide(color: borderColor),
                           ),
                         ),
-                        icon: const Icon(Icons.help_outline, color: primaryColor),
+                        icon: Icon(Icons.help_outline, color: primaryColor),
                         label: const Text('Help & Support', style: TextStyle(fontWeight: FontWeight.bold)),
                       ),
                       const SizedBox(height: 12),
@@ -274,7 +276,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             side: BorderSide(color: dangerColor.withOpacity(0.3)),
                           ),
                         ),
-                        icon: const Icon(Icons.logout, color: dangerColor),
+                        icon: Icon(Icons.logout, color: dangerColor),
                         label: const Text('Logout', style: TextStyle(fontWeight: FontWeight.bold)),
                       ),
                       

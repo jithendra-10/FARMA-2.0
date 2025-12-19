@@ -108,7 +108,7 @@ class RecommendationResultScreen extends StatelessWidget {
                             const SizedBox(height: 4),
                             Row(
                               children: [
-                                const Icon(Icons.volume_up, size: 16, color: primaryColor),
+                                Icon(Icons.volume_up, size: 16, color: primaryColor),
                                 const SizedBox(width: 4),
                                 Text(
                                   'REPLAY',

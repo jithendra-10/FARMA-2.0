@@ -300,7 +300,6 @@ class _MarketplaceScreenState extends State<MarketplaceScreen> with SingleTicker
             mainAxisSpacing: 16,
             crossAxisSpacing: 16,
             children: [
-            children: [
               _buildProductCard(context,
                 title: 'Hybrid Corn Seeds - 5kg',
                 price: '₹1,050',

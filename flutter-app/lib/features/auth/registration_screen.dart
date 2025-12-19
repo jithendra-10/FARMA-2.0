@@ -1,6 +1,8 @@
 import 'dart:ui'; // Required for ImageFilter
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:google_fonts/google_fonts.dart';
+import '../../services/auth_service.dart';
 import './otp_verification_screen.dart';
 
 class RegistrationScreen extends StatefulWidget {
@@ -17,8 +19,11 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
   static const Color backgroundDark = Color(0xFF102217);
   static const Color surfaceDark = Color(0xFF1A2E22);
 
-  bool _obscurePassword = true;
-  bool _obscureConfirmPassword = true;
+  final _authService = AuthService();
+  final _nameController = TextEditingController();
+  final _phoneController = TextEditingController();
+  
+  bool _isLoading = false;
   String _selectedLang = 'English';
 
   @override
@@ -167,6 +172,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                           children: [
                             _buildLabel('Full Name', isDark),
                             _buildTextField(
+                              controller: _nameController,
                               hint: 'Enter your name',
                               icon: Icons.person_outline,
                               isDark: isDark,
@@ -209,6 +215,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                                 ),
                                 Expanded(
                                   child: _buildTextField(
+                                    controller: _phoneController,
                                     hint: '98765 43210',
                                     keyboardType: TextInputType.phone,
                                     isDark: isDark,
@@ -218,36 +225,34 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                             ),
                             const SizedBox(height: 20),
                             
-                            _buildLabel('Password (Min. 6 chars)', isDark),
-                            _buildTextField(
-                              hint: '••••••••',
-                              icon: Icons.lock_outline,
-                              isPassword: true,
-                              obscureText: _obscurePassword,
-                              onToggleVisibility: () => setState(() => _obscurePassword = !_obscurePassword),
-                              isDark: isDark,
-                            ),
-                            const SizedBox(height: 20),
-                            
-                            _buildLabel('Confirm Password', isDark),
-                            _buildTextField(
-                              hint: '••••••••',
-                              icon: Icons.lock_reset,
-                              isPassword: true,
-                              obscureText: _obscureConfirmPassword,
-                              onToggleVisibility: () => setState(() => _obscureConfirmPassword = !_obscureConfirmPassword),
-                              isDark: isDark,
-                            ),
+                            // Password fields removed for OTP-based flow
+
                             
                             const SizedBox(height: 24),
                             
                             // Continue Button
                             ElevatedButton(
-                              onPressed: () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(builder: (context) => const OtpVerificationScreen()),
-                                );
+                              onPressed: _isLoading ? null : () async {
+                                final name = _nameController.text;
+                                final phone = '+91${_phoneController.text}'; // Hardcoded +91 for hackathon
+                                
+                                if (name.isEmpty || _phoneController.text.isEmpty) {
+                                  ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Please fill all fields')));
+                                  return;
+                                }
+
+                                setState(() => _isLoading = true);
+                                final success = await _authService.register(phone, name, _selectedLang);
+                                setState(() => _isLoading = false);
+
+                                if (success && mounted) {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(builder: (context) => OtpVerificationScreen(phone: phone)),
+                                  );
+                                } else if (mounted) {
+                                  ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Registration Failed. Check connection.')));
+                                }
                               },
                               style: ElevatedButton.styleFrom(
                                 backgroundColor: primaryColor,
@@ -257,20 +262,22 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                                 minimumSize: const Size(double.infinity, 60),
                                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
                               ),
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Text(
-                                    'Continue to Verify',
-                                    style: GoogleFonts.lexend(
-                                      fontSize: 18,
-                                      fontWeight: FontWeight.bold,
-                                    ),
+                              child: _isLoading 
+                                ? const SizedBox(height: 24, width: 24, child: CircularProgressIndicator(color: Colors.white))
+                                : Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Text(
+                                        'Continue to Verify',
+                                        style: GoogleFonts.lexend(
+                                          fontSize: 18,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                      const SizedBox(width: 8),
+                                      const Icon(Icons.arrow_forward_rounded, size: 22),
+                                    ],
                                   ),
-                                  const SizedBox(width: 8),
-                                  const Icon(Icons.arrow_forward_rounded, size: 22),
-                                ],
-                              ),
                             ),
                             
                             const SizedBox(height: 12),
@@ -407,6 +414,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
   Widget _buildTextField({
     required String hint,
     IconData? icon,
+    TextEditingController? controller,
     bool isPassword = false,
     bool obscureText = false,
     VoidCallback? onToggleVisibility,
@@ -423,6 +431,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
         border: Border.all(color: borderColor),
       ),
       child: TextField(
+        controller: controller,
         obscureText: obscureText,
         keyboardType: keyboardType,
         style: GoogleFonts.lexend(fontSize: 18),

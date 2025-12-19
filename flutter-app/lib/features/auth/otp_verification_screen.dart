@@ -1,9 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import '../home/home_screen.dart'; // Import the new home screen
+import '../home/home_screen.dart';
+import '../../services/auth_service.dart';
 
-class OtpVerificationScreen extends StatelessWidget {
-  const OtpVerificationScreen({super.key});
+class OtpVerificationScreen extends StatefulWidget {
+  final String phone;
+  const OtpVerificationScreen({super.key, required this.phone});
+
+  @override
+  State<OtpVerificationScreen> createState() => _OtpVerificationScreenState();
+}
+
+class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
+  final _otpController = TextEditingController();
+  final _authService = AuthService();
+  bool _isLoading = false;
 
   // Re-using colors from our theme
   static const Color primaryColor = Color(0xFF13EC6A);
@@ -51,7 +62,7 @@ class OtpVerificationScreen extends StatelessWidget {
         ),
         const SizedBox(height: 8),
         Text(
-          'Enter the OTP sent to your number.',
+          'Enter the OTP sent to ${widget.phone}',
           textAlign: TextAlign.center,
           style: GoogleFonts.lexend(
             fontSize: 16,
@@ -74,7 +85,7 @@ class OtpVerificationScreen extends StatelessWidget {
         children: [
           // In a real app, you might use a package for the OTP input fields.
           // For this mock, a simple text field will suffice.
-          _buildTextField(icon: Icons.pin_outlined, hint: 'Enter OTP', keyboardType: TextInputType.number),
+          _buildTextField(controller: _otpController, icon: Icons.pin_outlined, hint: 'Enter OTP', keyboardType: TextInputType.number),
           const SizedBox(height: 24),
           ElevatedButton(
             style: ElevatedButton.styleFrom(
@@ -83,22 +94,31 @@ class OtpVerificationScreen extends StatelessWidget {
               minimumSize: const Size(double.infinity, 56),
               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
             ),
-            onPressed: () {
-              // Mock verification: Navigate to the new HomeScreen
-              Navigator.of(context).pushAndRemoveUntil(
-                MaterialPageRoute(builder: (context) => const HomeScreen()),
-                (Route<dynamic> route) => false, // This predicate removes all previous routes
-              );
+            onPressed: _isLoading ? null : () async {
+              setState(() => _isLoading = true);
+              final success = await _authService.verifyOtp(widget.phone, _otpController.text);
+              setState(() => _isLoading = false);
+
+              if (success && mounted) {
+                Navigator.of(context).pushAndRemoveUntil(
+                  MaterialPageRoute(builder: (context) => const HomeScreen()),
+                  (Route<dynamic> route) => false,
+                );
+              } else if (mounted) {
+                ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Invalid OTP')));
+              }
             },
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text('Verify & Proceed', style: GoogleFonts.lexend(fontWeight: FontWeight.bold, fontSize: 18)),
-                const SizedBox(width: 8),
-                const Icon(Icons.arrow_forward, size: 20),
-              ],
+            child: _isLoading 
+              ? const SizedBox(height: 24, width: 24, child: CircularProgressIndicator(color: textDarkColor))
+              : Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text('Verify & Proceed', style: GoogleFonts.lexend(fontWeight: FontWeight.bold, fontSize: 18)),
+                    const SizedBox(width: 8),
+                    const Icon(Icons.arrow_forward, size: 20),
+                  ],
+                ),
             ),
-          ),
         ],
       ),
     );
@@ -117,8 +137,9 @@ class OtpVerificationScreen extends StatelessWidget {
     );
   }
 
-  TextField _buildTextField({required IconData icon, required String hint, TextInputType? keyboardType}) {
+  TextField _buildTextField({required IconData icon, required String hint, TextInputType? keyboardType, required TextEditingController controller}) {
     return TextField(
+      controller: controller,
       keyboardType: keyboardType,
       textAlign: TextAlign.center, // Center the OTP input
       style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold, letterSpacing: 8),
