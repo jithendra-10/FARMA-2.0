@@ -22,6 +22,8 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
   final _authService = AuthService();
   final _nameController = TextEditingController();
   final _phoneController = TextEditingController();
+  final _passwordController = TextEditingController();
+  final _confirmPasswordController = TextEditingController();
   
   bool _isLoading = false;
   String _selectedLang = 'English';
@@ -225,7 +227,25 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                             ),
                             const SizedBox(height: 20),
                             
-                            // Password fields removed for OTP-based flow
+                            // Password fields
+                            _buildLabel('Password', isDark),
+                            _buildTextField(
+                              controller: _passwordController,
+                              hint: 'Create a password',
+                              icon: Icons.lock_outline,
+                              isDark: isDark,
+                              isPassword: true,
+                            ),
+                            const SizedBox(height: 20),
+
+                            _buildLabel('Confirm Password', isDark),
+                            _buildTextField(
+                              controller: _confirmPasswordController,
+                              hint: 'Confirm your password',
+                              icon: Icons.lock_outline,
+                              isDark: isDark,
+                              isPassword: true,
+                            ),
 
                             
                             const SizedBox(height: 24),
@@ -236,13 +256,18 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                                 final name = _nameController.text;
                                 final phone = '+91${_phoneController.text}'; // Hardcoded +91 for hackathon
                                 
-                                if (name.isEmpty || _phoneController.text.isEmpty) {
+                                if (name.isEmpty || _phoneController.text.isEmpty || _passwordController.text.isEmpty) {
                                   ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Please fill all fields')));
                                   return;
                                 }
 
+                                if (_passwordController.text != _confirmPasswordController.text) {
+                                  ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Passwords do not match')));
+                                  return;
+                                }
+
                                 setState(() => _isLoading = true);
-                                final success = await _authService.register(phone, name, _selectedLang);
+                                final success = await _authService.register(phone, name, _selectedLang, password: _passwordController.text);
                                 setState(() => _isLoading = false);
 
                                 if (success && mounted) {
@@ -412,46 +437,51 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
   }
 
   Widget _buildTextField({
+    required TextEditingController controller,
     required String hint,
     IconData? icon,
-    TextEditingController? controller,
-    bool isPassword = false,
-    bool obscureText = false,
-    VoidCallback? onToggleVisibility,
-    TextInputType? keyboardType,
+    TextInputType keyboardType = TextInputType.text,
     required bool isDark,
+    bool isPassword = false,
   }) {
-    final Color fillColor = isDark ? backgroundDark : backgroundLight;
-    final Color borderColor = isDark ? Colors.grey[800]! : Colors.grey[200]!;
-
-    return Container(
-      decoration: BoxDecoration(
-        color: fillColor,
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: borderColor),
-      ),
-      child: TextField(
-        controller: controller,
-        obscureText: obscureText,
-        keyboardType: keyboardType,
-        style: GoogleFonts.lexend(fontSize: 18),
-        decoration: InputDecoration(
-          hintText: hint,
-          hintStyle: TextStyle(color: Colors.grey[400]),
-          prefixIcon: icon != null ? Icon(icon, color: Colors.grey[400], size: 22) : null,
-          suffixIcon: isPassword
-              ? IconButton(
-                  icon: Icon(
-                    obscureText ? Icons.visibility_off_outlined : Icons.visibility_outlined,
-                    color: Colors.grey[400],
-                  ),
-                  onPressed: onToggleVisibility,
-                )
-              : null,
-          border: InputBorder.none,
-          contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
-        ),
-      ),
+    bool obscureText = isPassword; // Simplified logic for hackathon, toggle needs state management
+    
+    return StatefulBuilder(
+      builder: (context, setState) {
+        return Container(
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+          decoration: BoxDecoration(
+            color: isDark ? const Color(0xFF102217) : const Color(0xFFF6F8F7),
+            borderRadius: BorderRadius.circular(16),
+            border: Border.all(color: isDark ? Colors.grey[800]! : Colors.grey[300]!),
+          ),
+          child: TextField(
+            controller: controller,
+            obscureText: obscureText,
+            style: GoogleFonts.lexend(fontSize: 16, color: isDark ? Colors.white : Colors.black),
+            keyboardType: keyboardType,
+            decoration: InputDecoration(
+              hintText: hint,
+              hintStyle: GoogleFonts.lexend(color: Colors.grey),
+              border: InputBorder.none,
+              icon: icon != null ? Icon(icon, color: const Color(0xFF13EC6A)) : null,
+              suffixIcon: isPassword
+                  ? IconButton(
+                      icon: Icon(
+                        obscureText ? Icons.visibility_off_outlined : Icons.visibility_outlined,
+                        color: Colors.grey,
+                      ),
+                      onPressed: () {
+                        setState(() {
+                          obscureText = !obscureText;
+                        });
+                      },
+                    )
+                  : null,
+            ),
+          ),
+        );
+      }
     );
   }
 
