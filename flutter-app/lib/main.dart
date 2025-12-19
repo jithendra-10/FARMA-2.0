@@ -1,0 +1,63 @@
+import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'features/splash/splash_screen.dart';
+
+void main() {
+  runApp(const MyApp());
+}
+
+class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+
+  // Define theme colors from your HTML
+  static const Color primaryColor = Color(0xFF13EC6A);
+  static const Color backgroundLightColor = Color(0xFFF6F8F7);
+  static const Color backgroundDarkColor = Color(0xFF102217);
+  static const Color surfaceDarkColor = Color(0xFF1A2C22);
+
+  @override
+  Widget build(BuildContext context) {
+    final baseTextTheme = Theme.of(context).textTheme;
+
+    // Light Theme
+    final lightTheme = ThemeData(
+      brightness: Brightness.light,
+      primaryColor: primaryColor,
+      scaffoldBackgroundColor: backgroundLightColor,
+      colorScheme: ColorScheme.fromSeed(
+        seedColor: primaryColor,
+        brightness: Brightness.light,
+        primary: primaryColor,
+        background: backgroundLightColor,
+        surface: Colors.white,
+      ),
+      textTheme: GoogleFonts.splineSansTextTheme(baseTextTheme).apply(bodyColor: Colors.black87),
+      useMaterial3: true,
+    );
+
+    // Dark Theme
+    final darkTheme = ThemeData(
+      brightness: Brightness.dark,
+      primaryColor: primaryColor,
+      scaffoldBackgroundColor: backgroundDarkColor,
+      colorScheme: ColorScheme.fromSeed(
+        seedColor: primaryColor,
+        brightness: Brightness.dark,
+        primary: primaryColor,
+        background: backgroundDarkColor,
+        surface: surfaceDarkColor, // Use surface-dark for cards/containers
+      ),
+      textTheme: GoogleFonts.splineSansTextTheme(baseTextTheme).apply(bodyColor: Colors.white),
+      useMaterial3: true,
+    );
+
+    return MaterialApp(
+      title: 'FARMA',
+      theme: lightTheme,
+      darkTheme: darkTheme,
+      themeMode: ThemeMode.system, // Automatically use light or dark mode
+      home: const SplashScreen(),
+      debugShowCheckedModeBanner: false,
+    );
+  }
+}
